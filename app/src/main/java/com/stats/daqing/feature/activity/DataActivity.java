@@ -60,9 +60,9 @@ public class DataActivity extends BaseActivity {
     }
 
     private void initView() {
-        setTitle("");
         mToolBar = (TintToolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
+        getSupportActionBar().setTitle(null);
         // 设置返回按钮
         getSupportActionBar().setHomeButtonEnabled(true);
     }

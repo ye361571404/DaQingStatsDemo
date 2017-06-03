@@ -2,6 +2,7 @@ package com.stats.daqing.feature.adapter;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Build;
 import android.os.Handler;
@@ -17,11 +18,13 @@ import android.widget.TextView;
 
 import com.stats.daqing.R;
 import com.stats.daqing.bean.DataReleaseBean;
+import com.stats.daqing.common.ToastAlone;
+import com.stats.daqing.feature.activity.ArticleActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyExpandableListAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter {
+public class MyExpandableListAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter, View.OnClickListener {
 
     private List<Pair<DataReleaseBean.TypesListBean, List<DataReleaseBean.TypesListBean>>> dataList;
     private Context mContext;
@@ -166,6 +169,8 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
 
         DataReleaseBean.TypesListBean bean = dataList.get(groupPosition).second.get(childPosition);
         childHolder.tvChildName.setText(bean.getTypeName());
+        childHolder.tvChildName.setTag(bean);
+        childHolder.tvChildName.setOnClickListener(this);
         return convertView;
     }
 
@@ -233,6 +238,19 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
     public void setData(List<Pair<DataReleaseBean.TypesListBean, List<DataReleaseBean.TypesListBean>>> dataList) {
         this.dataList.clear();
         this.dataList.addAll(dataList);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_child_name:
+
+                DataReleaseBean.TypesListBean bean = (DataReleaseBean.TypesListBean) v.getTag();
+                ToastAlone.showShortToast(bean.getTypeName());
+                Intent intent = new Intent(mContext, ArticleActivity.class);
+                mContext.startActivity(intent);
+                break;
+        }
     }
 
 

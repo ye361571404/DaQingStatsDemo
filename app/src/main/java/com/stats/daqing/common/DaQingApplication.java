@@ -22,9 +22,13 @@ import org.xutils.x;
 public class DaQingApplication extends Application implements ThemeUtils.switchColor{
 
 
+    private static Context context;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        context = getApplicationContext();
 
         ToastAlone.getInstance().init(this);
         initImageLoader(getApplicationContext());
@@ -35,6 +39,10 @@ public class DaQingApplication extends Application implements ThemeUtils.switchC
         // 是否输出debug日志, 开启debug会影响性能.
         x.Ext.setDebug(BuildConfig.DEBUG);
 
+    }
+
+    public static Context getContext() {
+        return context;
     }
 
     public static void initImageLoader(Context context) {

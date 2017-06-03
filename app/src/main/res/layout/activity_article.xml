@@ -1,38 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:toolbar="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.stats.daqing.feature.activity.DataDetailsActivity">
-
-
-    <!--<android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_width="match_parent"
-        toolbar:logo="@drawable/home_02"
-        toolbar:navigationIcon="?attr/homeAsUpIndicator"
-        toolbar:theme="@style/toolbar_white_theme"
-        android:background="?attr/colorPrimary">
-
-
-    </android.support.v7.widget.Toolbar>-->
+    tools:context="com.stats.daqing.feature.activity.ArticleActivity">
 
     <com.bilibili.magicasakura.widgets.TintToolbar
         android:id="@+id/toolbar"
-        android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
-        toolbar:logo="@drawable/home_02"
-        toolbar:navigationIcon="?attr/homeAsUpIndicator"
-        toolbar:theme="@style/toolbar_white_theme"
-        android:background="@color/theme_color_primary">
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:theme="@style/toolbar_white_theme"
+        android:background="@color/theme_color_primary"
+        app:elevation="4dp">
+
+        <TextView
+            android:text="数据大庆"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </com.bilibili.magicasakura.widgets.TintToolbar>
-
-
-
-
 
     <ProgressBar
         android:id="@+id/myProgressBar"
@@ -50,7 +41,5 @@
         android:layout_height="match_parent">
 
     </WebView>
-
-
 
 </RelativeLayout>

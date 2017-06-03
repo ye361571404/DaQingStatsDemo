@@ -1,12 +1,16 @@
 package com.stats.daqing.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Administrator on 2017/6/2.
  */
 
-public class ColumnsBean {
+public class ColumnsBean implements Parcelable {
 
 
     /**
@@ -63,7 +67,7 @@ public class ColumnsBean {
         this.columnsList = columnsList;
     }
 
-    public static class ColumnsListBean {
+    public static class ColumnsListBean implements Parcelable {
         /**
          * columnIco : http://202.97.194.240:9080/upload/1496314390839.jpg
          * columnName : test1
@@ -128,5 +132,82 @@ public class ColumnsBean {
         public void setIsShow(int isShow) {
             this.isShow = isShow;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.columnIco);
+            dest.writeString(this.columnName);
+            dest.writeLong(this.createTime);
+            dest.writeString(this.createUser);
+            dest.writeInt(this.id);
+            dest.writeInt(this.isShow);
+        }
+
+        public ColumnsListBean() {
+        }
+
+        protected ColumnsListBean(Parcel in) {
+            this.columnIco = in.readString();
+            this.columnName = in.readString();
+            this.createTime = in.readLong();
+            this.createUser = in.readString();
+            this.id = in.readInt();
+            this.isShow = in.readInt();
+        }
+
+        public static final Creator<ColumnsListBean> CREATOR = new Creator<ColumnsListBean>() {
+            @Override
+            public ColumnsListBean createFromParcel(Parcel source) {
+                return new ColumnsListBean(source);
+            }
+
+            @Override
+            public ColumnsListBean[] newArray(int size) {
+                return new ColumnsListBean[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.counts);
+        dest.writeInt(this.totalPage);
+        dest.writeInt(this.pageSize);
+        dest.writeInt(this.currentPage);
+        dest.writeList(this.columnsList);
+    }
+
+    public ColumnsBean() {
+    }
+
+    protected ColumnsBean(Parcel in) {
+        this.counts = in.readInt();
+        this.totalPage = in.readInt();
+        this.pageSize = in.readInt();
+        this.currentPage = in.readInt();
+        this.columnsList = new ArrayList<ColumnsListBean>();
+        in.readList(this.columnsList, ColumnsListBean.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<ColumnsBean> CREATOR = new Parcelable.Creator<ColumnsBean>() {
+        @Override
+        public ColumnsBean createFromParcel(Parcel source) {
+            return new ColumnsBean(source);
+        }
+
+        @Override
+        public ColumnsBean[] newArray(int size) {
+            return new ColumnsBean[size];
+        }
+    };
 }

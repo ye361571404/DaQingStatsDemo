@@ -84,7 +84,7 @@
     <color name="blue_trans">#B41A78C3</color>
 
     <color name="purple">#c0bcc7</color>
-    <color name="purple_dark">#cfcdd2</color>
+    <color name="purple_dark">#c0bcc7</color>
     <color name="purple_trans">#c0bcc7</color>
 
     <color name="green">#4CAF50</color>
@@ -104,7 +104,7 @@
     <color name="orange_trans">#99FF9800</color>
 
     <color name="red">#F44336</color>
-    <color name="red_dark">#C62828</color>
-    <color name="red_trans">#99F44336</color>
+    <color name="red_dark">#F44336</color>
+    <color name="red_trans">#F44336</color>
 
 </resources>

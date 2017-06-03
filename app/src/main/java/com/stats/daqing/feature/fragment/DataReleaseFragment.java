@@ -64,8 +64,8 @@ public class DataReleaseFragment extends BasePager {
         //加载网络资源
 //        wvContent.loadUrl("http://10.0.2.2:8080/assets/JavaAndJavaScriptCall.html");
         // wvContent.loadUrl("file:///android_asset/JavaAndJavaScriptCall.html");
-        wvContent.loadUrl("http://data.stats.gov.cn");
-        // wvContent.loadUrl("https://www.baidu.com/");
+        // wvContent.loadUrl("http://data.stats.gov.cn");
+        wvContent.loadUrl("https://www.baidu.com/");
 
 
         wvContent.setWebChromeClient(new WebChromeClient() {

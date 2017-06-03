@@ -2,6 +2,8 @@ package com.stats.daqing;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -12,11 +14,14 @@ import android.widget.ImageView;
 
 import com.bilibili.magicasakura.widgets.TintToolbar;
 import com.google.gson.Gson;
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.stats.daqing.base.BaseActivity;
 import com.stats.daqing.bean.ColumnsBean;
 import com.stats.daqing.bean.MainItemBean;
 import com.stats.daqing.common.ThemeHelper;
 import com.stats.daqing.common.ToastAlone;
+import com.stats.daqing.common.Urls;
 import com.stats.daqing.feature.activity.BannerDataDetailsActivity;
 import com.stats.daqing.feature.activity.DataActivity;
 import com.stats.daqing.feature.activity.LoginActivity;
@@ -32,6 +37,7 @@ import org.xutils.common.util.LogUtil;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,63 +63,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         setContentView(R.layout.activity_main);
         initVariable();
         initView();
+        setListener();
         assignViews();
         initData();
         getData();
-    }
-
-    private void getData() {
-        String url = "http://202.97.194.240:9080/app/column";
-        x.http().get(new RequestParams(url), new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                LogUtil.e("onSuccess: result = " + result);
-                Gson gson = new Gson();
-                ColumnsBean bean = gson.fromJson(result, ColumnsBean.class);
-                columnsList = bean.getColumnsList();
-
-                mAdapter.setData(columnsList);
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-
-            }
-
-            @Override
-            public void onFinished() {
-
-            }
-        });
-    }
-
-    private void initData() {
-
-        //默认是CIRCLE_INDICATOR
-        mBanner.setImages(images)
-                .setBannerTitles(titles)
-                .setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE)
-                .setImageLoader(new BannerImageLoader())
-                .setOnBannerClickListener(this)
-                .start();
-
-        rvContent.setLayoutManager(new GridLayoutManager(MainActivity.this,3));
-        mAdapter = new ColumnAdapter(this,columnsList);
-        rvContent.setAdapter(mAdapter);
-    }
-
-    private void initView() {
-        // setTitle("");
-        mToolBar = (TintToolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolBar);
-        getSupportActionBar().setTitle(null);
-        mBanner = (Banner) findViewById(R.id.banner);
-        rvContent = (RecyclerView)findViewById(R.id.rv_content);
     }
 
     private void initVariable() {
@@ -149,6 +102,69 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
 
         columnsList = new ArrayList<>();
+    }
+
+    private void initView() {
+        mToolBar = (TintToolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolBar);
+        getSupportActionBar().setTitle(null);
+        mBanner = (Banner) findViewById(R.id.banner);
+        rvContent = (RecyclerView)findViewById(R.id.rv_content);
+    }
+
+    private void setListener() {
+    }
+
+    private void initData() {
+
+        //默认是CIRCLE_INDICATOR
+        mBanner.setImages(images)
+                .setBannerTitles(titles)
+                .setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE)
+                .setImageLoader(new BannerImageLoader())
+                .setOnBannerClickListener(this)
+                .start();
+
+
+        GridLayoutManager layoutManager = new GridLayoutManager(MainActivity.this, 3);
+        layoutManager.setSmoothScrollbarEnabled(true);
+        layoutManager.setAutoMeasureEnabled(true);
+
+        rvContent.setLayoutManager(layoutManager);
+        rvContent.setHasFixedSize(true);
+        rvContent.setNestedScrollingEnabled(false);
+
+        mAdapter = new ColumnAdapter(this,columnsList);
+        rvContent.setAdapter(mAdapter);
+    }
+
+    private void getData() {
+        x.http().get(new RequestParams(Urls.URL_APP_COLUMN), new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                LogUtil.e("onSuccess: result = " + result);
+                Gson gson = new Gson();
+                ColumnsBean bean = gson.fromJson(result, ColumnsBean.class);
+                columnsList = bean.getColumnsList();
+
+                mAdapter.setData(columnsList);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 
     @Override
@@ -190,11 +206,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_item:
+                // 进入栏目详情
                 int position = (int) v.getTag();
                 ToastAlone.showShortToast("onclick " + position);
                 Intent intent = new Intent(MainActivity.this, DataActivity.class);
                 intent.putExtra("position", position);
-                intent.putParcelableArrayListExtra("items", items);
+                intent.putParcelableArrayListExtra("items", new ArrayList<Parcelable>(columnsList));
                 startActivity(intent);
                 break;
 

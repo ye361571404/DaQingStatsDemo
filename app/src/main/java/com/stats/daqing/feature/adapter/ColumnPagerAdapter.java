@@ -15,18 +15,18 @@ import java.util.List;
  * Created by hackware on 2016/9/10.
  */
 
-public class ExamplePagerAdapter extends PagerAdapter {
+public class ColumnPagerAdapter extends PagerAdapter {
     private List<BasePager> mDataList;
     private List<String> titles;
 
-    public ExamplePagerAdapter(List<BasePager> dataList,List<String> titles) {
+    public ColumnPagerAdapter(List<BasePager> dataList, List<String> titles) {
         this.mDataList = dataList;
         this.titles = titles;
     }
 
     @Override
     public int getCount() {
-        return mDataList == null ? 0 : mDataList.size();
+        return titles == null ? 0 : titles.size();
     }
 
     @Override
@@ -46,17 +46,6 @@ public class ExamplePagerAdapter extends PagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
     }
-
-    /*@Override
-    public int getItemPosition(Object object) {
-        TextView textView = (TextView) object;
-        String text = textView.getText().toString();
-        int index = mDataList.indexOf(text);
-        if (index >= 0) {
-            return index;
-        }
-        return POSITION_NONE;
-    }*/
 
     @Override
     public CharSequence getPageTitle(int position) {

@@ -67,6 +67,11 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
+    public void addData(List<ColumnsBean.ColumnsListBean> columnsList) {
+        this.items.addAll(items);
+        notifyDataSetChanged();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder{
 
         RelativeLayout rlItem;

@@ -47,22 +47,31 @@
         android:layout_width="match_parent"
         android:layout_height="200dp" />
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_content"
-        android:overScrollMode="never"
-        android:layout_marginTop="15dp"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/ns_content"
+        android:layout_marginTop="25dp"
         android:layout_below="@id/banner"
+        android:layout_above="@+id/iv_logo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_content"
+            android:overScrollMode="never"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+
+
+
+    </android.support.v4.widget.NestedScrollView>
 
     <ImageView
         android:id="@+id/iv_logo"
         android:layout_marginTop="20dp"
-        android:layout_below="@id/rv_content"
+        android:layout_above="@+id/ll_theme"
         android:layout_centerHorizontal="true"
         android:background="@drawable/logo3"
         android:layout_width="wrap_content"
@@ -70,11 +79,13 @@
 
 
     <LinearLayout
-        android:layout_below="@id/iv_logo"
+        android:id="@+id/ll_theme"
         android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
         android:paddingLeft="?attr/dialogPreferredPadding"
         android:paddingRight="?attr/dialogPreferredPadding"
         android:paddingTop="?attr/dialogPreferredPadding"
+        android:paddingBottom="?attr/dialogPreferredPadding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -169,8 +180,6 @@
             android:layout_height="30dp" />
 
     </LinearLayout>
-
-
 
 
 

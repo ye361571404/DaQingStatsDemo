@@ -28,11 +28,7 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
     private XRecyclerView mRecyclerView;
     private DataInterpretationAdapter mAdapter;
     private List<DataInterpretationBean> listData;
-    private int refreshTime = 0;
     private int times = 0;
-
-
-
 
 
     public DataInterpretationFragment(Context context) {
@@ -63,8 +59,6 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
 
             @Override
             public void onRefresh() {
-                // 下拉刷新
-                refreshTime ++;
                 times = 0;
                 new Handler().postDelayed(new Runnable(){
                     public void run() {
@@ -72,7 +66,7 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
                         mRecyclerView.refreshComplete();
                     }
 
-                }, 1000);            //refresh data here
+                }, 1000);
             }
 
 
@@ -133,7 +127,6 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
                 Intent intent = new Intent(mContext, DataDetailsActivity.class);
                 intent.putExtra("DataDetails", bean);
                 mContext.startActivity(intent);
-
                 break;
         }
     }

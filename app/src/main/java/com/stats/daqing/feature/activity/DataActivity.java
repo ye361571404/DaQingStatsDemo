@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -14,11 +12,12 @@ import com.bilibili.magicasakura.widgets.TintToolbar;
 import com.stats.daqing.R;
 import com.stats.daqing.base.BaseActivity;
 import com.stats.daqing.base.BasePager;
-import com.stats.daqing.bean.MainItemBean;
+import com.stats.daqing.bean.ColumnsBean;
 import com.stats.daqing.common.ToastAlone;
-import com.stats.daqing.feature.adapter.ExamplePagerAdapter;
+import com.stats.daqing.feature.adapter.ColumnPagerAdapter;
 import com.stats.daqing.feature.fragment.DataInterpretationFragment;
 import com.stats.daqing.feature.fragment.DataQueryFragment;
+import com.stats.daqing.feature.fragment.DataRelease2Fragment;
 import com.stats.daqing.feature.fragment.DataReleaseFragment;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
@@ -36,13 +35,12 @@ import java.util.List;
 
 public class DataActivity extends BaseActivity {
 
-    private static final String[] CHANNELS = new String[]{"CUPCAKE", "DONUT", "ECLAIR", "GINGERBREAD", "HONEYCOMB", "ICE_CREAM_SANDWICH", "JELLY_BEAN", "KITKAT", "LOLLIPOP", "M", "NOUGAT"};
-    private List<String> titles;// = Arrays.asList(CHANNELS);
+    private List<String> titles;
 
-    private ExamplePagerAdapter mExamplePagerAdapter;
+    private ColumnPagerAdapter mExamplePagerAdapter;
     private ViewPager mViewPager;
     private int currentPosition;
-    private ArrayList<MainItemBean> items;
+    private List<ColumnsBean.ColumnsListBean> items;
     private TintToolbar mToolBar;
     private List<BasePager> pagers;
 
@@ -55,7 +53,7 @@ public class DataActivity extends BaseActivity {
         initView();
 
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mExamplePagerAdapter = new ExamplePagerAdapter(pagers,titles);
+        mExamplePagerAdapter = new ColumnPagerAdapter(pagers,titles);
         mViewPager.setAdapter(mExamplePagerAdapter);
 
         initMagicIndicator4();
@@ -72,11 +70,11 @@ public class DataActivity extends BaseActivity {
     private void initVariable() {
         titles = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) {
-            titles.add(items.get(i).getName());
+            titles.add(items.get(i).getColumnName());
         }
 
         pagers = new ArrayList<BasePager>();
-        pagers.add(new DataReleaseFragment(DataActivity.this));
+        pagers.add(new DataRelease2Fragment(DataActivity.this));
         pagers.add(new DataInterpretationFragment(DataActivity.this));
         pagers.add(new DataQueryFragment(DataActivity.this));
         pagers.add(new DataQueryFragment(DataActivity.this));

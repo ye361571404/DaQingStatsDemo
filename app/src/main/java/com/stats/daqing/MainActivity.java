@@ -62,6 +62,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private List<ColumnsBean.ColumnsListBean> columnsList;
     /** 轮播图文章列表 **/
     private List<ArticlesBean.ArticlesListBean> articlesList;
+    private SwipeRefreshLayout swipeRefres;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,14 +109,37 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void initView() {
+        swipeRefres = (SwipeRefreshLayout)findViewById(R.id.swipeRefres);
         mToolBar = (TintToolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
         getSupportActionBar().setTitle(null);
         mBanner = (Banner) findViewById(R.id.banner);
         rvContent = (RecyclerView)findViewById(R.id.rv_content);
+
+        swipeRefres.setProgressBackgroundColorSchemeResource(android.R.color.white);
+        // 设置下拉进度的主题颜色
+        swipeRefres.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
     }
 
     private void setListener() {
+
+        // 下拉时触发SwipeRefreshLayout的下拉动画，动画完毕之后就会回调这个方法
+        swipeRefres.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                // 开始刷新，设置当前为刷新状态
+                swipeRefres.setRefreshing(true);
+
+                // 这里是主线程
+                // 一些比较耗时的操作，比如联网获取数据，需要放到子线程去执行
+                // TODO 获取数据
+                getData();
+                getArticles();
+
+
+            }
+        });
     }
 
     private void initData() {
@@ -151,6 +175,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 columnsList = bean.getColumnsList();
 
                 mAdapter.setData(columnsList);
+                swipeRefres.setRefreshing(false);
             }
 
             @Override

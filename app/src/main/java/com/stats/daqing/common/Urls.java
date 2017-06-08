@@ -16,4 +16,16 @@ public class Urls {
     /** 获取分类 **/
     public static final String URL_APP_TYPES = BASE_URL + "app/types";
 
+    /** 获取文章列表 **/
+    public static final String URL_APP_ARTCLES = BASE_URL + "app/articles";
+
+    /** 设置主题色 **/
+    public static final String URL_APP_BACKCOLOR = BASE_URL + "app/backColor";
+
+
+
+
+
+
+
 }

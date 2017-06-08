@@ -2,10 +2,11 @@ package com.stats.daqing;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,19 +15,18 @@ import android.widget.ImageView;
 
 import com.bilibili.magicasakura.widgets.TintToolbar;
 import com.google.gson.Gson;
-import com.jcodecraeer.xrecyclerview.ProgressStyle;
-import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.stats.daqing.base.BaseActivity;
+import com.stats.daqing.bean.ArticlesBean;
 import com.stats.daqing.bean.ColumnsBean;
 import com.stats.daqing.bean.MainItemBean;
+import com.stats.daqing.bean.ResultBean;
 import com.stats.daqing.common.ThemeHelper;
 import com.stats.daqing.common.ToastAlone;
 import com.stats.daqing.common.Urls;
-import com.stats.daqing.feature.activity.BannerDataDetailsActivity;
+import com.stats.daqing.feature.activity.ArticlesActivity;
 import com.stats.daqing.feature.activity.DataActivity;
 import com.stats.daqing.feature.activity.LoginActivity;
 import com.stats.daqing.feature.adapter.ColumnAdapter;
-import com.stats.daqing.feature.adapter.MainAdapter;
 import com.stats.daqing.feature.banner.BannerImageLoader;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -37,12 +37,16 @@ import org.xutils.common.util.LogUtil;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * 待处理
+ * 1.更换栏目详情标题栏颜色
+ * 2.数据解读详情页,添加上一篇下一篇
+ * 3.栏目详情的item,在时间旁边添加栏目名称(未做)
+ * 4.动态加载首页顶部轮播图
+ */
 public class MainActivity extends BaseActivity implements View.OnClickListener, OnBannerClickListener {
 
     private TintToolbar mToolBar;
@@ -56,6 +60,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private long mkeyTime;
     private String[] bannerUrls;
     private List<ColumnsBean.ColumnsListBean> columnsList;
+    /** 轮播图文章列表 **/
+    private List<ArticlesBean.ArticlesListBean> articlesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,24 +73,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         assignViews();
         initData();
         getData();
+        setTheme();
+        getArticles();
+
     }
+
+
 
     private void initVariable() {
         mCurrentTheme = ThemeHelper.getTheme(this);
-
-        String[] urls = getResources().getStringArray(R.array.url);
-        String[] tips = getResources().getStringArray(R.array.title);
-        List list = Arrays.asList(urls);
-        images = new ArrayList(list);
-        List list1 = Arrays.asList(tips);
-        titles= new ArrayList(list1);
-        bannerUrls = getResources().getStringArray(R.array.item_urls);
+        images = new ArrayList();
+        titles = new ArrayList();
 
         items = new ArrayList<>();
         MainItemBean bean;
         String[] itemNames = getResources().getStringArray(R.array.item_names);
-
-        // int[] itemIcons = getResources().getIntArray(R.array.item_icons);
 
         int[] itemIcons = new int[]{
                 R.drawable.home_01,
@@ -118,12 +121,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private void initData() {
 
         //默认是CIRCLE_INDICATOR
-        mBanner.setImages(images)
+        /*mBanner.setImages(images)
                 .setBannerTitles(titles)
                 .setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE)
                 .setImageLoader(new BannerImageLoader())
                 .setOnBannerClickListener(this)
-                .start();
+                .start();*/
 
 
         GridLayoutManager layoutManager = new GridLayoutManager(MainActivity.this, 3);
@@ -148,6 +151,91 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 columnsList = bean.getColumnsList();
 
                 mAdapter.setData(columnsList);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+
+
+    private void setTheme(){
+
+        x.http().get(new RequestParams(Urls.URL_APP_BACKCOLOR), new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Gson gson = new Gson();
+                ResultBean bean = gson.fromJson(result, ResultBean.class);
+                if (TextUtils.equals(bean.getResult(),"0")) {
+                    // 蓝色
+                    mCurrentTheme = ThemeHelper.CARD_STORM;
+                }else if(TextUtils.equals(bean.getResult(),"1")){
+                    // 红色
+                    mCurrentTheme = ThemeHelper.CARD_FIREY;
+                }
+                updateTheme(mCurrentTheme);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+
+
+
+    /**
+     * 获取轮播图数据
+     */
+    private void getArticles() {
+        RequestParams entity = new RequestParams(Urls.URL_APP_ARTCLES);
+        entity.addBodyParameter("publish_flag","0");
+        entity.addBodyParameter("isFistTopFlip","0");
+        x.http().get(entity, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Gson gson = new Gson();
+                ArticlesBean bean = gson.fromJson(result, ArticlesBean.class);
+
+                articlesList = bean.getArticlesList();
+                ArticlesBean.ArticlesListBean artcles;
+                for (int i = 0; i < articlesList.size(); i++) {
+                    artcles = articlesList.get(i);
+                    images.add(artcles.getImageLogo());
+                    titles.add(artcles.getTitle());
+                }
+
+
+                mBanner.setImages(images)
+                        .setBannerTitles(titles)
+                        .setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE)
+                        .setImageLoader(new BannerImageLoader())
+                        .setOnBannerClickListener(MainActivity.this)
+                        .start();
+
             }
 
             @Override
@@ -216,14 +304,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 break;
 
             case R.id.iv_pink:
+                // 粉色
                 mCurrentTheme = ThemeHelper.CARD_SAKURA;
                 updateTheme(mCurrentTheme);
                 break;
             case R.id.iv_purple:
+                // 蓝色
                 mCurrentTheme = ThemeHelper.CARD_HOPE;
                 updateTheme(mCurrentTheme);
                 break;
             case R.id.iv_blue:
+                // 灰色
                 mCurrentTheme = ThemeHelper.CARD_STORM;
                 updateTheme(mCurrentTheme);
                 break;
@@ -269,12 +360,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void OnBannerClick(int position) {
-        String url = bannerUrls[position - 1];
-        Intent intent = new Intent(MainActivity.this, BannerDataDetailsActivity.class);
-        intent.putExtra("bannerUrls", url);
-        startActivity(intent);
-        ToastAlone.showShortToast("positino = " + position);
-
+        if (articlesList != null) {
+            ArticlesBean.ArticlesListBean bean = articlesList.get(position - 1);
+            Intent intent = new Intent(MainActivity.this, ArticlesActivity.class);
+            ArrayList<ArticlesBean.ArticlesListBean> value = new ArrayList<>();
+            value.add(bean);
+            intent.putExtra("articlesList", value);
+            startActivity(intent);
+            ToastAlone.showShortToast("positino = " + position);
+        }
     }
 
 

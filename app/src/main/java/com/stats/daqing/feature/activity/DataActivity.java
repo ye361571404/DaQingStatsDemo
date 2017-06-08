@@ -78,8 +78,6 @@ public class DataActivity extends BaseActivity {
         pagers.add(new DataInterpretationFragment(DataActivity.this));
         pagers.add(new DataQueryFragment(DataActivity.this));
         pagers.add(new DataQueryFragment(DataActivity.this));
-        pagers.add(new DataQueryFragment(DataActivity.this));
-        pagers.add(new DataQueryFragment(DataActivity.this));
     }
 
     private void revMsg() {
@@ -92,7 +90,8 @@ public class DataActivity extends BaseActivity {
 
     private void initMagicIndicator4() {
         MagicIndicator magicIndicator = (MagicIndicator) findViewById(R.id.magic_indicator);
-        magicIndicator.setBackgroundColor(Color.parseColor("#455a64"));
+        // 设置指针背景色
+        magicIndicator.setBackgroundColor(Color.parseColor("#014387"));
         CommonNavigator commonNavigator = new CommonNavigator(this);
         commonNavigator.setAdapter(new CommonNavigatorAdapter() {
             @Override
@@ -104,6 +103,7 @@ public class DataActivity extends BaseActivity {
             public IPagerTitleView getTitleView(Context context, final int index) {
                 SimplePagerTitleView simplePagerTitleView = new ColorTransitionPagerTitleView(context);
                 simplePagerTitleView.setText(titles.get(index));
+                // 设置指针文字颜色
                 simplePagerTitleView.setNormalColor(Color.parseColor("#88ffffff"));
                 simplePagerTitleView.setSelectedColor(Color.WHITE);
                 simplePagerTitleView.setOnClickListener(new View.OnClickListener() {

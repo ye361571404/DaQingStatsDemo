@@ -10,22 +10,24 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.stats.daqing.R;
+import com.stats.daqing.bean.ArticlesBean;
 import com.stats.daqing.bean.DataInterpretationBean;
+import com.stats.daqing.utils.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by jianghejie on 15/11/26.
+ * 数据解读适配器
  */
 public class DataInterpretationAdapter extends RecyclerView.Adapter<DataInterpretationAdapter.ViewHolder> {
 
 
     private View.OnClickListener onClickListener;
     private ImageLoader imageLoader;
-    public List<DataInterpretationBean> datas = null;
+    public List<ArticlesBean.ArticlesListBean> datas = null;
 
-    public DataInterpretationAdapter(View.OnClickListener onClickListener,List<DataInterpretationBean> datas) {
+    public DataInterpretationAdapter(View.OnClickListener onClickListener,List<ArticlesBean.ArticlesListBean> datas) {
         this.onClickListener = onClickListener;
         this.datas = datas;
         imageLoader = ImageLoader.getInstance();
@@ -39,13 +41,17 @@ public class DataInterpretationAdapter extends RecyclerView.Adapter<DataInterpre
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        DataInterpretationBean bean = datas.get(position);
+        ArticlesBean.ArticlesListBean bean = datas.get(position);
 
         viewHolder.rlItem.setTag(bean);
         viewHolder.rlItem.setOnClickListener(onClickListener);
         viewHolder.tvTitle.setText(bean.getTitle());
-        viewHolder.tvCreateTime.setText(bean.getCreatetime());
-        imageLoader.displayImage(bean.getImgUrl(),viewHolder.ivInfo);
+        viewHolder.tvCreateTime.setText(TimeUtil.millisecond2DateStr(bean.getCreateTime()));
+        if (bean.getImageSmallList().isEmpty()) {
+            // 设置默认图片
+            bean.setImageSmallList("http://www.suqian.gov.cn/stjj/tjtpxw/201705/e1aae8e2bfab447880e1c86c4bb71c87/images/95c19833a4de4cce98d340b1f35c6f47.jpg");
+        }
+        imageLoader.displayImage(bean.getImageSmallList(),viewHolder.ivInfo);
 
     }
 
@@ -54,13 +60,13 @@ public class DataInterpretationAdapter extends RecyclerView.Adapter<DataInterpre
         return datas.size();
     }
 
-    public void setData(List<DataInterpretationBean> data) {
+    public void setData(List<ArticlesBean.ArticlesListBean>  data) {
         this.datas.clear();
         this.datas.addAll(data);
         notifyDataSetChanged();
     }
 
-    public void addData(List<DataInterpretationBean> data) {
+    public void addData(List<ArticlesBean.ArticlesListBean>  data) {
         this.datas.addAll(data);
         notifyDataSetChanged();
     }

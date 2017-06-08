@@ -10,22 +10,30 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bilibili.magicasakura.widgets.TintToolbar;
 import com.stats.daqing.R;
 import com.stats.daqing.base.BaseActivity;
+import com.stats.daqing.bean.ArticlesBean;
 import com.stats.daqing.bean.DataInterpretationBean;
+import com.stats.daqing.utils.TimeUtil;
 
 /**
- * 详情页
+ * 单篇文章详情
  */
 public class DataDetailsActivity extends BaseActivity {
 
 
     private TintToolbar mToolBar;
     private ProgressBar bar;
-    private WebView webview;
-    private DataInterpretationBean dataDetails;
+    private WebView webView;
+    /** 文章标题 **/
+    private TextView tvTitle;
+    /** 文章发布时间 **/
+    private TextView tvTime;
+
+    private ArticlesBean.ArticlesListBean articles;
 
 
     @Override
@@ -35,20 +43,49 @@ public class DataDetailsActivity extends BaseActivity {
 
         revMsg();
         initView();
-        initWebView();
+        initData();
+        // initWebView();
+    }
+
+    private void initData() {
+        tvTitle.setText(articles.getTitle());
+        tvTime.setText(TimeUtil.millisecond2DateStr(articles.getCreateTime()));
+        webView.loadDataWithBaseURL(null,articles.getContent(),"text/html", "utf-8", null);
+
     }
 
     private void revMsg() {
         Intent intent = getIntent();
-        dataDetails = intent.getParcelableExtra("DataDetails");
+        articles = intent.getParcelableExtra("articles");
     }
 
 
     private void initView() {
         mToolBar = (TintToolbar) findViewById(R.id.toolbar);
         bar = (ProgressBar) findViewById(R.id.myProgressBar);
-        webview = (WebView) findViewById(R.id.webview);
 
+        tvTitle = (TextView)findViewById(R.id.tv_title);
+        tvTime = (TextView)findViewById(R.id.tv_time);
+
+        webView = (WebView) findViewById(R.id.webview);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setBuiltInZoomControls(true);
+        webView.setWebChromeClient(new WebChromeClient() {
+
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                if (newProgress == 100) {
+                    bar.setVisibility(View.GONE);
+                } else {
+                    if (View.GONE == bar.getVisibility()) {
+                        bar.setVisibility(View.VISIBLE);
+                    }
+                    bar.setProgress(newProgress);
+                }
+                super.onProgressChanged(view, newProgress);
+            }
+
+        });
 
         setSupportActionBar(mToolBar);
         getSupportActionBar().setTitle(null);
@@ -57,7 +94,7 @@ public class DataDetailsActivity extends BaseActivity {
     }
 
 
-    private void initWebView() {
+    /*private void initWebView() {
         WebSettings webSettings = webview.getSettings();
         //设置支持javaScript脚步语言
         webSettings.setJavaScriptEnabled(true);
@@ -97,7 +134,7 @@ public class DataDetailsActivity extends BaseActivity {
             }
 
         });
-    }
+    }*/
 
 
     @Override

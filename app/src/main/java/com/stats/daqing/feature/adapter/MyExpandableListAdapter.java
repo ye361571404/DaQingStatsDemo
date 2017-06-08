@@ -7,6 +7,7 @@ import android.database.DataSetObserver;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,24 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.stats.daqing.R;
+import com.stats.daqing.bean.ArticlesBean;
 import com.stats.daqing.bean.DataReleaseBean;
 import com.stats.daqing.common.ToastAlone;
-import com.stats.daqing.feature.activity.ArticleActivity;
+import com.stats.daqing.common.Urls;
+import com.stats.daqing.feature.activity.ArticlesActivity;
+
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 数据发布适配器
+ */
 public class MyExpandableListAdapter extends BaseExpandableListAdapter implements ExpandableListAdapter, View.OnClickListener {
 
     private List<Pair<DataReleaseBean.TypesListBean, List<DataReleaseBean.TypesListBean>>> dataList;
@@ -35,42 +46,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
             super.handleMessage(msg);
         }
     };
-
-    /*private String[] armTypes = new String[]{
-            "WORD", "EXCEL", "EMAIL", "PPT",
-            "WORD", "EXCEL", "EMAIL", "PPT",
-            "WORD", "EXCEL", "EMAIL", "PPT",
-            "WORD", "EXCEL", "EMAIL", "PPT",
-            "WORD", "EXCEL", "EMAIL", "PPT"
-    };
-
-    private String[][] arms = new String[][]{
-            {"文档编辑", "文档排版", "文档处理", "文档打印"},
-            {"表格编辑", "表格排版", "表格处理", "表格打印"},
-            {"收发邮件", "管理邮箱", "登录登出", "注册绑定"},
-            {"演示编辑", "演示排版", "演示处理", "演示打印"},
-
-            {"文档编辑", "文档排版", "文档处理", "文档打印"},
-            {"表格编辑", "表格排版", "表格处理", "表格打印"},
-            {"收发邮件", "管理邮箱", "登录登出", "注册绑定"},
-            {"演示编辑", "演示排版", "演示处理", "演示打印"},
-
-            {"文档编辑", "文档排版", "文档处理", "文档打印"},
-            {"表格编辑", "表格排版", "表格处理", "表格打印"},
-            {"收发邮件", "管理邮箱", "登录登出", "注册绑定"},
-            {"演示编辑", "演示排版", "演示处理", "演示打印"},
-
-            {"文档编辑", "文档排版", "文档处理", "文档打印"},
-            {"表格编辑", "表格排版", "表格处理", "表格打印"},
-            {"收发邮件", "管理邮箱", "登录登出", "注册绑定"},
-            {"演示编辑", "演示排版", "演示处理", "演示打印"},
-
-            {"文档编辑", "文档排版", "文档处理", "文档打印"},
-            {"表格编辑", "表格排版", "表格处理", "表格打印"},
-            {"收发邮件", "管理邮箱", "登录登出", "注册绑定"},
-            {"演示编辑", "演示排版", "演示处理", "演示打印"},
-    };*/
-
 
     public MyExpandableListAdapter(Context context, List<Pair<DataReleaseBean.TypesListBean, List<DataReleaseBean.TypesListBean>>> dataList) {
         this.mContext = context;
@@ -99,7 +74,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
     @Override
     public int getChildrenCount(int groupPosition) {
         return dataList.get(groupPosition).second.size();
-        // return arms[groupPosition].length;
     }
 
     @Override
@@ -110,8 +84,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         return dataList.get(groupPosition).second.get(childPosition);
-
-        // return arms[groupPosition][childPosition];
     }
 
     @Override
@@ -164,28 +136,11 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
             childHolder = (ChildHolder) convertView.getTag();
         }
 
-        // childHolder.tvChildName.setText(getChild(groupPosition, childPosition).toString());
-
-
         DataReleaseBean.TypesListBean bean = dataList.get(groupPosition).second.get(childPosition);
         childHolder.tvChildName.setText(bean.getTypeName());
-        childHolder.tvChildName.setTag(bean);
+        childHolder.tvChildName.setTag(R.id.tv_child_name,bean);
         childHolder.tvChildName.setOnClickListener(this);
         return convertView;
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
-    public void rotateArrow(ImageView mArrowImageView) {
-        long duration = 300;
-        int degree = 0;
-        if (mArrowImageView.getTag() == null || mArrowImageView.getTag().equals(true)) {
-            mArrowImageView.setTag(false);
-            degree = -180;
-        } else {
-            degree = 0;
-            mArrowImageView.setTag(true);
-        }
-        mArrowImageView.animate().setDuration(duration).rotation(degree);
     }
 
     @Override
@@ -232,9 +187,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
         expandableListView.expandGroup(groupPosition);
     }
 
-
-
-
     public void setData(List<Pair<DataReleaseBean.TypesListBean, List<DataReleaseBean.TypesListBean>>> dataList) {
         this.dataList.clear();
         this.dataList.addAll(dataList);
@@ -244,13 +196,43 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_child_name:
-
-                DataReleaseBean.TypesListBean bean = (DataReleaseBean.TypesListBean) v.getTag();
-                ToastAlone.showShortToast(bean.getTypeName());
-                Intent intent = new Intent(mContext, ArticleActivity.class);
-                mContext.startActivity(intent);
+                DataReleaseBean.TypesListBean bean = (DataReleaseBean.TypesListBean) v.getTag(R.id.tv_child_name);
+                ToastAlone.showShortToast("position = " + bean.getId());
+                getArtcle(bean);
                 break;
         }
+    }
+
+    private void getArtcle(DataReleaseBean.TypesListBean bean) {
+        RequestParams entity = new RequestParams(Urls.URL_APP_ARTCLES);
+        entity.addParameter("typeId","10");
+        // entity.addBodyParameter("typeId",bean.getId()+"");
+        x.http().get(entity, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Gson gson = new Gson();
+                ArticlesBean articlesBean = gson.fromJson(result, ArticlesBean.class);
+                Intent intent = new Intent(mContext, ArticlesActivity.class);
+                List<ArticlesBean.ArticlesListBean> articlesList = articlesBean.getArticlesList();
+                intent.putParcelableArrayListExtra("articlesList", new ArrayList<Parcelable>(articlesList));
+                mContext.startActivity(intent);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ToastAlone.showShortToast("获取数据失败");
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 
 
@@ -263,9 +245,5 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
     class ChildHolder{
         TextView tvChildName;
     }
-
-
-
-
 
 }

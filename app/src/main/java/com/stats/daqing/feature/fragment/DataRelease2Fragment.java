@@ -63,47 +63,18 @@ public class DataRelease2Fragment extends BasePager implements View.OnClickListe
 
     }
 
+    /**
+     * 获取数据发布数据
+     */
     private void getData() {
-        /*String json = "{\"counts\":36,\"currentPage\":1,\"pageSize\":20,\"totalPage\":2,\"typesList\":[{\"createTime\":1496226554000,\"createUser\":\"18210281168\",\"id\":36,\"isShow\":0,\"parentId\":32,\"typeName\":\"全省各市（地）地区生产总值\"},{\"createTime\":1496226541000,\"createUser\":\"18210281168\",\"id\":35,\"isShow\":0,\"parentId\":32,\"typeName\":\"各县区地区生产总值\"},{\"createTime\":1496226530000,\"createUser\":\"18210281168\",\"id\":34,\"isShow\":0,\"parentId\":32,\"typeName\":\"分行业地区生产总值\"},{\"createTime\":1496226516000,\"createUser\":\"18210281168\",\"id\":33,\"isShow\":0,\"parentId\":32,\"typeName\":\"地区生产总值主要指标\"},{\"createTime\":1496226493000,\"createUser\":\"18210281168\",\"id\":32,\"isShow\":0,\"parentId\":4,\"typeName\":\"GDP\"},{\"createTime\":1496226458000,\"createUser\":\"18210281168\",\"id\":31,\"isShow\":0,\"parentId\":28,\"typeName\":\"畜禽出栏及产品产量\"},{\"createTime\":1496226442000,\"createUser\":\"18210281168\",\"id\":30,\"isShow\":0,\"parentId\":28,\"typeName\":\"畜禽存栏\"},{\"createTime\":1496226430000,\"createUser\":\"18210281168\",\"id\":29,\"isShow\":0,\"parentId\":28,\"typeName\":\"农林牧渔业增加值\"},{\"createTime\":1496226408000,\"createUser\":\"18210281168\",\"id\":28,\"isShow\":0,\"parentId\":4,\"typeName\":\"农业\"},{\"createTime\":1496226344000,\"createUser\":\"18210281168\",\"id\":27,\"isShow\":0,\"parentId\":21,\"typeName\":\"规上工业主要产品产量及用电量\"},{\"createTime\":1496226311000,\"createUser\":\"18210281168\",\"id\":26,\"isShow\":0,\"parentId\":21,\"typeName\":\"未生产企业名单\"},{\"createTime\":1496226247000,\"createUser\":\"18210281168\",\"id\":25,\"isShow\":0,\"parentId\":21,\"typeName\":\"规上工业工业总产值增长面\"},{\"createTime\":1496226234000,\"createUser\":\"18210281168\",\"id\":24,\"isShow\":0,\"parentId\":21,\"typeName\":\"规上工业主要效益指标\"},{\"createTime\":1496226219000,\"createUser\":\"18210281168\",\"id\":23,\"isShow\":0,\"parentId\":21,\"typeName\":\"地方规上工业十大产业增加值\"},{\"createTime\":1496226190000,\"createUser\":\"18210281168\",\"id\":22,\"isShow\":0,\"parentId\":21,\"typeName\":\"规上工业增加值\"},{\"createTime\":1496226166000,\"createUser\":\"18210281168\",\"id\":21,\"isShow\":0,\"parentId\":3,\"typeName\":\"工业和能源\"},{\"createTime\":1496226124000,\"createUser\":\"18210281168\",\"id\":20,\"isShow\":0,\"parentId\":19,\"typeName\":\"建筑业主要指标\"},{\"createTime\":1496226080000,\"createUser\":\"18210281168\",\"id\":19,\"isShow\":0,\"parentId\":4,\"typeName\":\"建筑业\"},{\"createTime\":1496226042000,\"createUser\":\"18210281168\",\"id\":18,\"isShow\":0,\"parentId\":15,\"typeName\":\"房地产开发主要指标\"},{\"createTime\":1496226027000,\"createUser\":\"18210281168\",\"id\":17,\"isShow\":0,\"parentId\":15,\"typeName\":\"分县区固定资产投资\"}]}";
-        Gson gson = new Gson();
-        DataReleaseBean bean = gson.fromJson(json, DataReleaseBean.class);
 
-        List<DataReleaseBean.TypesListBean> list = bean.getTypesList();
-
-        dataReleaseTree = new DataReleaseTreeBean();
-        List<Pair<DataReleaseBean.TypesListBean, List<DataReleaseBean.TypesListBean>>> monthDataList = new ArrayList<>();
-        List<Pair<DataReleaseBean.TypesListBean, List<DataReleaseBean.TypesListBean>>> seasonDataList = new ArrayList<>();
-        List<Pair<DataReleaseBean.TypesListBean, List<DataReleaseBean.TypesListBean>>> yearDataList = new ArrayList<>();
-        DataReleaseBean.TypesListBean typeBean;
-        for (int i = 0; i < list.size(); i++) {
-            typeBean = list.get(i);
-            if (typeBean.getParentId() == 3) {
-                List<DataReleaseBean.TypesListBean> typesList = filterData(list, typeBean);
-                monthDataList.add(new Pair<>(typeBean, typesList));
-
-            }else if (typeBean.getParentId() == 4){
-                List<DataReleaseBean.TypesListBean> typesList = filterData(list, typeBean);
-                seasonDataList.add(new Pair<>(typeBean, typesList));
-
-            }else if (typeBean.getParentId() == 5){
-                List<DataReleaseBean.TypesListBean> typesList = filterData(list, typeBean);
-                yearDataList.add(new Pair<>(typeBean, typesList));
-            }
-        }
-
-        dataReleaseTree.setMonthDataList(monthDataList);
-        dataReleaseTree.setSeasonDataList(seasonDataList);
-        dataReleaseTree.setYearDataList(yearDataList);
-        showData(1,dataReleaseTree.getMonthDataList());*/
-
-
-
-        x.http().get(new RequestParams(Urls.URL_APP_TYPES), new Callback.CommonCallback<String>() {
+        RequestParams params = new RequestParams(Urls.URL_APP_TYPES);
+        params.addParameter("columnId","1");
+        x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 Gson gson = new Gson();
                 DataReleaseBean bean = gson.fromJson(result, DataReleaseBean.class);
-
                 List<DataReleaseBean.TypesListBean> list = bean.getTypesList();
 
                 dataReleaseTree = new DataReleaseTreeBean();
@@ -191,6 +162,10 @@ public class DataRelease2Fragment extends BasePager implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        if (dataReleaseTree == null) {
+            return;
+        }
+
         switch (v.getId()) {
             case R.id.rl_month:
                 // 月度数据
@@ -222,6 +197,10 @@ public class DataRelease2Fragment extends BasePager implements View.OnClickListe
         vLine1.setSelected(index == 1);
         vLine2.setSelected(index == 2);
         vLine3.setSelected(index == 3);
+
+        tvMonth.setSelected(index == 1);
+        tvSeason.setSelected(index == 2);
+        tvYear.setSelected(index == 3);
     }
 
 }

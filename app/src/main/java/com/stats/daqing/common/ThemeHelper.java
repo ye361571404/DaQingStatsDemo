@@ -47,6 +47,7 @@ public class ThemeHelper {
     }
 
     public static int getTheme(Context context) {
+        // 设置默认主题颜色
         return getSharePreference(context).getInt(CURRENT_THEME, CARD_SAKURA);
     }
 

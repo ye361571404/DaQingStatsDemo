@@ -14,6 +14,8 @@ import com.bilibili.magicasakura.utils.ThemeUtils;
 import com.stats.daqing.R;
 import com.stats.daqing.common.ThemeHelper;
 
+import org.xutils.common.util.LogUtil;
+
 public class BaseActivity extends AppCompatActivity {
 
     @Override
@@ -41,6 +43,7 @@ public class BaseActivity extends AppCompatActivity {
      * @param currentTheme
      */
     public void updateTheme(int currentTheme) {
+        LogUtil.e("updateTheme: currentTheme" + currentTheme);
         if (ThemeHelper.getTheme(this) != currentTheme) {
             ThemeHelper.setTheme(this, currentTheme);
             ThemeUtils.refreshUI(this, new ThemeUtils.ExtraRefreshable() {

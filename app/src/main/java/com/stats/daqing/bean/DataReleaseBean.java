@@ -3,6 +3,7 @@ package com.stats.daqing.bean;
 import java.util.List;
 
 /**
+ * 分类
  * Created by Administrator on 2017/6/4.
  */
 

@@ -1,4 +1,4 @@
-package utils;
+package com.stats.daqing.utils;
 
 import android.content.res.AssetManager;
 

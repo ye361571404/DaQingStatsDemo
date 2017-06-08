@@ -70,9 +70,9 @@
     <color name="subscribe_bg">#fff5f5f5</color>
 
 
-    <color name="theme_color_primary">#fb7299</color>
-    <color name="theme_color_primary_dark">#b85671</color>
-    <color name="theme_color_primary_trans">#99f0486c</color>
+    <color name="theme_color_primary">#2196F3</color>
+    <color name="theme_color_primary_dark">#2196F3</color>
+    <color name="theme_color_primary_trans">#2196F3</color>
 
     <!-- theme color -->
     <color name="pink">#fb7299</color>
@@ -80,8 +80,8 @@
     <color name="pink_trans">#99f0486c</color>
 
     <color name="blue">#2196F3</color>
-    <color name="blue_dark">#1565C0</color>
-    <color name="blue_trans">#B41A78C3</color>
+    <color name="blue_dark">#2196F3</color>
+    <color name="blue_trans">#2196F3</color>
 
     <color name="purple">#c0bcc7</color>
     <color name="purple_dark">#c0bcc7</color>

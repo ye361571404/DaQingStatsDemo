@@ -38,7 +38,7 @@
             android:name=".feature.activity.RegistActivity"
             android:theme="@style/NoActionBar" />
         <activity android:name=".base.BaseActivity" />
-        <activity android:name=".feature.activity.ArticleActivity"
+        <activity android:name=".feature.activity.ArticlesActivity"
             android:theme="@style/NoActionBar" ></activity>
     </application>
 

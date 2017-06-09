@@ -197,7 +197,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
         switch (v.getId()) {
             case R.id.tv_child_name:
                 DataReleaseBean.TypesListBean bean = (DataReleaseBean.TypesListBean) v.getTag(R.id.tv_child_name);
-                ToastAlone.showShortToast("position = " + bean.getId());
+                // ToastAlone.showShortToast("position = " + bean.getId());
                 getArtcle(bean);
                 break;
         }
@@ -205,17 +205,21 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
 
     private void getArtcle(DataReleaseBean.TypesListBean bean) {
         RequestParams entity = new RequestParams(Urls.URL_APP_ARTCLES);
-        entity.addParameter("typeId","10");
-        // entity.addBodyParameter("typeId",bean.getId()+"");
+        // entity.addParameter("typeId","10");
+        entity.addParameter("typeId",bean.getId()+"");
         x.http().get(entity, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 Gson gson = new Gson();
                 ArticlesBean articlesBean = gson.fromJson(result, ArticlesBean.class);
-                Intent intent = new Intent(mContext, ArticlesActivity.class);
                 List<ArticlesBean.ArticlesListBean> articlesList = articlesBean.getArticlesList();
-                intent.putParcelableArrayListExtra("articlesList", new ArrayList<Parcelable>(articlesList));
-                mContext.startActivity(intent);
+                if (articlesList.isEmpty()) {
+                    ToastAlone.showShortToast("数据为空");
+                }else{
+                    Intent intent = new Intent(mContext, ArticlesActivity.class);
+                    intent.putParcelableArrayListExtra("articlesList", new ArrayList<Parcelable>(articlesList));
+                    mContext.startActivity(intent);
+                }
             }
 
             @Override

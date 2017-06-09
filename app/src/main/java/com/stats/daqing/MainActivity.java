@@ -290,7 +290,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (item.getItemId() == R.id.menu_user) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-            ToastAlone.showShortToast("进入用户中心界面");
+            // ToastAlone.showShortToast("进入用户中心界面");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -319,7 +319,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.rl_item:
                 // 进入栏目详情
                 int position = (int) v.getTag();
-                ToastAlone.showShortToast("onclick " + position);
+                // ToastAlone.showShortToast("onclick " + position);
                 Intent intent = new Intent(MainActivity.this, DataActivity.class);
                 intent.putExtra("position", position);
                 intent.putParcelableArrayListExtra("items", new ArrayList<Parcelable>(columnsList));
@@ -390,7 +390,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             value.add(bean);
             intent.putExtra("articlesList", value);
             startActivity(intent);
-            ToastAlone.showShortToast("positino = " + position);
+            // ToastAlone.showShortToast("positino = " + position);
         }
     }
 

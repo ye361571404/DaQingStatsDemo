@@ -127,17 +127,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         swipeRefres.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
                 // 开始刷新，设置当前为刷新状态
                 swipeRefres.setRefreshing(true);
-
                 // 这里是主线程
                 // 一些比较耗时的操作，比如联网获取数据，需要放到子线程去执行
-                // TODO 获取数据
                 getData();
                 getArticles();
-
-
             }
         });
     }
@@ -244,6 +239,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             public void onSuccess(String result) {
                 Gson gson = new Gson();
                 ArticlesBean bean = gson.fromJson(result, ArticlesBean.class);
+
+                images.clear();
+                titles.clear();
 
                 articlesList = bean.getArticlesList();
                 ArticlesBean.ArticlesListBean artcles;

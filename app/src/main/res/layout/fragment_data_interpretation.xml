@@ -5,16 +5,31 @@
 
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/recyclerview"
-        android:layout_above="@+id/rv_types"
+        android:layout_above="@+id/rl_types"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_types"
+    <RelativeLayout
+        android:id="@+id/rl_types"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="wrap_content">
 
-    </android.support.v7.widget.RecyclerView>
+        <View
+            android:id="@+id/v_line"
+            android:background="@color/background_gray"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_types"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

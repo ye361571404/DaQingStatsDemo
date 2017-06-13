@@ -3,6 +3,7 @@ package com.stats.daqing.feature.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -39,10 +40,14 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
     private XRecyclerView mRecyclerView;
     private RecyclerView rvTypes;
     private DataInterpretationAdapter mAdapter;
-    private List<DataInterpretationBean> listData;
-    private int times = 0;
     private InterpretationTypeAdapter typeAdapter;
     private List<ArticlesBean.ArticlesListBean> articlesList;
+    /** 当前类型id **/
+    private int currentTypeId;
+    /** 当前页数 **/
+    private int currentPage = 1;
+    /** 每页返回数据 **/
+    private int pageSize = 15;
 
 
     public DataInterpretationFragment(Context context) {
@@ -56,7 +61,13 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
     @Override
     public View initView() {
         initVariable();
+        View inflate = assignViews();
+        getTypes();
+        return inflate;
+    }
 
+    @NonNull
+    private View assignViews() {
         View inflate = View.inflate(mContext, R.layout.fragment_data_interpretation, null);
         mRecyclerView = (XRecyclerView) inflate.findViewById(R.id.recyclerview);
         rvTypes = (RecyclerView) inflate.findViewById(R.id.rv_types);
@@ -72,47 +83,23 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
 
             @Override
             public void onRefresh() {
-                times = 0;
-                new Handler().postDelayed(new Runnable(){
-                    public void run() {
-                        // mAdapter.setData(getData());
-                        mRecyclerView.refreshComplete();
-                    }
-
-                }, 1000);
+                // 下拉刷新
+                currentPage = 1;
+                getArticleData(currentTypeId);
             }
 
 
             @Override
             public void onLoadMore() {
-                // 加载更多
-                if(times < 2){
-                    new Handler().postDelayed(new Runnable(){
-                        public void run() {
-                            // mAdapter.addData(getData());
-                            mRecyclerView.loadMoreComplete();
-                        }
-                    }, 1000);
-
-                } else {
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            mRecyclerView.setNoMore(true);
-                            // mAdapter.addData(getData());
-                        }
-                    }, 1000);
-                }
-                times++;
+                currentPage++;
+                getArticleData(currentTypeId);
             }
-
         });
 
         mAdapter = new DataInterpretationAdapter(this,articlesList);
         mRecyclerView.setAdapter(mAdapter);
-        getTypes();
         return inflate;
     }
-
 
 
     private void getTypes() {
@@ -130,7 +117,7 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
                 rvTypes.setLayoutManager(linearLayoutManager);
                 typeAdapter = new InterpretationTypeAdapter(DataInterpretationFragment.this, list);
                 rvTypes.setAdapter(typeAdapter);
-                getArticleData(list.get(0));
+                getArticleData(list.get(0).getId());
             }
 
             @Override
@@ -152,18 +139,37 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
 
     /**
      * 获取文章
-     * @param typeBean
+     * @param typeId
      */
-    private void getArticleData(DataReleaseBean.TypesListBean typeBean) {
+    private void getArticleData(int typeId) {
+        currentTypeId = typeId;
         RequestParams entity = new RequestParams(Urls.URL_APP_ARTCLES);
-        entity.addParameter("typeId",typeBean.getId());
+        entity.addParameter("typeId", currentTypeId);
+        entity.addParameter("currentPage", currentPage);
+        entity.addParameter("pageSize", pageSize);
+
         x.http().get(entity, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 Gson gson = new Gson();
                 ArticlesBean articlesBean = gson.fromJson(result, ArticlesBean.class);
-                articlesList = articlesBean.getArticlesList();
-                mAdapter.setData(articlesList);
+
+                if(currentPage > articlesBean.getTotalPage()){
+                    // 没有更多
+                    ToastAlone.showShortToast("没有更多数据");
+                    mRecyclerView.setNoMore(true);
+
+                }else if(currentPage == 1){
+                    // 下拉刷新
+                    articlesList = articlesBean.getArticlesList();
+                    mAdapter.setData(articlesList);
+                    mRecyclerView.refreshComplete();
+                }else{
+                    // 加载更多
+                    articlesList = articlesBean.getArticlesList();
+                    mAdapter.addData(articlesList);
+                    mRecyclerView.loadMoreComplete();
+                }
             }
 
             @Override
@@ -184,83 +190,11 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
     }
 
 
-
-
-
     @Override
     public void initData() {
 
-        listData = getData();
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(layoutManager);
-
-        mRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
-        mRecyclerView.setArrowImageView(R.drawable.iconfont_downgrey);
-        mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
-
-            @Override
-            public void onRefresh() {
-                times = 0;
-                new Handler().postDelayed(new Runnable(){
-                    public void run() {
-                        // mAdapter.setData(getData());
-                        mRecyclerView.refreshComplete();
-                    }
-
-                }, 1000);
-            }
-
-
-            @Override
-            public void onLoadMore() {
-                // 加载更多
-                if(times < 2){
-                    new Handler().postDelayed(new Runnable(){
-                        public void run() {
-                            // mAdapter.addData(getData());
-                            mRecyclerView.loadMoreComplete();
-                        }
-                    }, 1000);
-
-                } else {
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            mRecyclerView.setNoMore(true);
-                            // mAdapter.addData(getData());
-                        }
-                    }, 1000);
-                }
-                times++;
-            }
-
-        });
-
-        // mAdapter = new DataInterpretationAdapter(this,listData);
-        mRecyclerView.setAdapter(mAdapter);
     }
 
-    private List<DataInterpretationBean> getData() {
-        List<DataInterpretationBean> data = new ArrayList<DataInterpretationBean>();
-        String[] titles = mContext.getResources().getStringArray(R.array.data_interpretation_titles);
-        String[] times = mContext.getResources().getStringArray(R.array.data_interpretation_time);
-        String[] urls = mContext.getResources().getStringArray(R.array.data_interpretation_urls);
-        String[] imgUrls = mContext.getResources().getStringArray(R.array.data_interpretation_img_urls);
-
-        DataInterpretationBean bean;
-        for(int i = 0; i < titles.length ;i++){
-            bean = new DataInterpretationBean();
-            bean.setTitle(titles[i]);
-            bean.setCreatetime(times[i]);
-            bean.setUrl(urls[i]);
-            // bean.setImgResId(R.drawable.home_01);
-            bean.setImgUrl(imgUrls[i]);
-            data.add(bean);
-        }
-        return data;
-    }
 
 
     @Override
@@ -269,9 +203,14 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
             case R.id.rl_item:
                 // 进入文章详情
                 ArticlesBean.ArticlesListBean bean = (ArticlesBean.ArticlesListBean) v.getTag();
-                Intent intent = new Intent(mContext, DataDetailsActivity.class);
-                intent.putExtra("articles", bean);
-                mContext.startActivity(intent);
+                if (bean == null) {
+                    ToastAlone.showShortToast("内容为空");
+                }else{
+                    Intent intent = new Intent(mContext, DataDetailsActivity.class);
+                    intent.putExtra("articles", bean);
+                    mContext.startActivity(intent);
+                }
+
                 break;
 
             case R.id.rl_type_item:
@@ -279,10 +218,12 @@ public class DataInterpretationFragment extends BasePager implements View.OnClic
                 int position = (int) v.getTag();
                 DataReleaseBean.TypesListBean type = (DataReleaseBean.TypesListBean) v.getTag(R.id.rl_type_item);
                 typeAdapter.setCurrentPosition(position);
-                getArticleData(type);
-
+                getArticleData(type.getId());
                 break;
         }
     }
+
+
+
 
 }

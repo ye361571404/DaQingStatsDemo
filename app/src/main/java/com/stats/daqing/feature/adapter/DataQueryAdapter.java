@@ -10,21 +10,22 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.stats.daqing.R;
-import com.stats.daqing.bean.DataInterpretationBean;
+import com.stats.daqing.bean.MaterialBean;
+import com.stats.daqing.utils.TimeUtil;
 
 import java.util.List;
 
 /**
- * Created by jianghejie on 15/11/26.
+ * 数据解读适配器
  */
 public class DataQueryAdapter extends RecyclerView.Adapter<DataQueryAdapter.ViewHolder> {
 
 
     private View.OnClickListener onClickListener;
     private ImageLoader imageLoader;
-    public List<DataInterpretationBean> datas = null;
+    private List<MaterialBean.MaterialListBean> datas = null;
 
-    public DataQueryAdapter(View.OnClickListener onClickListener, List<DataInterpretationBean> datas) {
+    public DataQueryAdapter(View.OnClickListener onClickListener, List<MaterialBean.MaterialListBean> datas) {
         this.onClickListener = onClickListener;
         this.datas = datas;
         imageLoader = ImageLoader.getInstance();
@@ -38,14 +39,18 @@ public class DataQueryAdapter extends RecyclerView.Adapter<DataQueryAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        DataInterpretationBean bean = datas.get(position);
+        MaterialBean.MaterialListBean bean = datas.get(position);
 
         viewHolder.rlItem.setTag(bean);
-        viewHolder.tvDown.setTag(bean);
         viewHolder.rlItem.setOnClickListener(onClickListener);
+        viewHolder.tvDown.setTag(bean);
         viewHolder.tvDown.setOnClickListener(onClickListener);
-        viewHolder.tvTitle.setText(bean.getTitle());
-        viewHolder.tvCreateTime.setText(bean.getCreatetime());
+        viewHolder.tvTitle.setText(bean.getName());
+        viewHolder.tvCreateTime.setText(TimeUtil.millisecond2DateStr(bean.getCreateTime()));
+        if (bean.getImgUrl().isEmpty()) {
+            // 设置默认图片
+            bean.setImgUrl("http://www.suqian.gov.cn/stjj/tjtpxw/201705/e1aae8e2bfab447880e1c86c4bb71c87/images/95c19833a4de4cce98d340b1f35c6f47.jpg");
+        }
         imageLoader.displayImage(bean.getImgUrl(),viewHolder.ivInfo);
 
     }
@@ -55,13 +60,13 @@ public class DataQueryAdapter extends RecyclerView.Adapter<DataQueryAdapter.View
         return datas.size();
     }
 
-    public void setData(List<DataInterpretationBean> data) {
+    public void setData(List<MaterialBean.MaterialListBean> data) {
         this.datas.clear();
         this.datas.addAll(data);
         notifyDataSetChanged();
     }
 
-    public void addData(List<DataInterpretationBean> data) {
+    public void addData(List<MaterialBean.MaterialListBean>  data) {
         this.datas.addAll(data);
         notifyDataSetChanged();
     }
@@ -83,10 +88,5 @@ public class DataQueryAdapter extends RecyclerView.Adapter<DataQueryAdapter.View
             tvDown = (TextView) view.findViewById(R.id.tv_down);
         }
     }
-
-
-
-
-
 
 }

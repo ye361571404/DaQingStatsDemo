@@ -19,6 +19,9 @@ public class Urls {
     /** 获取文章列表 **/
     public static final String URL_APP_ARTCLES = BASE_URL + "app/articles";
 
+    /** 数据查询 -> 获取列表 **/
+    public static final String URL_APP_MATERIAL = BASE_URL + "app/material";
+
     /** 设置主题色 **/
     public static final String URL_APP_BACKCOLOR = BASE_URL + "app/backColor";
 

@@ -74,9 +74,11 @@ public class DataActivity extends BaseActivity {
         }
 
         pagers = new ArrayList<BasePager>();
+        // 数据发布
         pagers.add(new DataRelease2Fragment(DataActivity.this));
+        // 数据解读
         pagers.add(new DataInterpretationFragment(DataActivity.this));
-        pagers.add(new DataQueryFragment(DataActivity.this));
+        // 数据查询
         pagers.add(new DataQueryFragment(DataActivity.this));
     }
 

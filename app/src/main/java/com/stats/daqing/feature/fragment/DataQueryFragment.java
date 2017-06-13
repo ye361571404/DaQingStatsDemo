@@ -3,19 +3,33 @@ package com.stats.daqing.feature.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.stats.daqing.R;
 import com.stats.daqing.base.BasePager;
+import com.stats.daqing.bean.ArticlesBean;
 import com.stats.daqing.bean.DataInterpretationBean;
+import com.stats.daqing.bean.DataReleaseBean;
+import com.stats.daqing.bean.MaterialBean;
 import com.stats.daqing.common.ToastAlone;
+import com.stats.daqing.common.Urls;
 import com.stats.daqing.feature.activity.DataDetailsActivity;
 import com.stats.daqing.feature.adapter.DataInterpretationAdapter;
 import com.stats.daqing.feature.adapter.DataQueryAdapter;
+import com.stats.daqing.feature.adapter.InterpretationTypeAdapter;
+
+import org.apache.commons.lang.math.NumberUtils;
+import org.xutils.common.Callback;
+import org.xutils.common.util.LogUtil;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,27 +43,39 @@ public class DataQueryFragment extends BasePager implements View.OnClickListener
 
 
     private XRecyclerView mRecyclerView;
+    private RecyclerView rvTypes;
     private DataQueryAdapter mAdapter;
-    private List<DataInterpretationBean> listData;
-    private int refreshTime = 0;
     private int times = 0;
+    private InterpretationTypeAdapter typeAdapter;
+    private List<MaterialBean.MaterialListBean> materialList;
+    /** 当前类型id **/
+    private int currentTypeId;
+    /** 当前页数 **/
+    private int currentPage = 1;
+    /** 每页返回数据 **/
+    private int pageSize = 12;
 
     public DataQueryFragment(Context context) {
         super(context);
-        initData();
+    }
+
+    private void initVariable() {
+        materialList = new ArrayList<>();
     }
 
     @Override
     public View initView() {
-        View inflate = View.inflate(mContext, R.layout.fragment_data_query, null);
-        mRecyclerView = (XRecyclerView) inflate.findViewById(R.id.recyclerview);
+        initVariable();
+        View inflate = assignViews();
+        getTypes();
         return inflate;
     }
 
-    @Override
-    public void initData() {
-
-        listData = getData();
+    @NonNull
+    private View assignViews() {
+        View inflate = View.inflate(mContext, R.layout.fragment_data_query, null);
+        mRecyclerView = (XRecyclerView) inflate.findViewById(R.id.recyclerview);
+        rvTypes = (RecyclerView) inflate.findViewById(R.id.rv_types);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -62,81 +88,146 @@ public class DataQueryFragment extends BasePager implements View.OnClickListener
 
             @Override
             public void onRefresh() {
-                refreshTime ++;
-                times = 0;
-                new Handler().postDelayed(new Runnable(){
-                    public void run() {
-                        mAdapter.setData(getData());
-                        mRecyclerView.refreshComplete();
-                    }
-
-                }, 1000);            //refresh data here
+                // 下拉刷新
+                currentPage = 1;
+                getArticleData(currentTypeId);
+                mRecyclerView.refreshComplete();
             }
 
 
             @Override
             public void onLoadMore() {
-                if(times < 2){
-                    new Handler().postDelayed(new Runnable(){
-                        public void run() {
-                            mAdapter.addData(getData());
-                            mRecyclerView.loadMoreComplete();
-                        }
-                    }, 1000);
-
-                } else {
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            mRecyclerView.setNoMore(true);
-                            mAdapter.addData(getData());
-                        }
-                    }, 1000);
-                }
-                times++;
+                // 加载更多
+                currentPage++;
+                getArticleData(currentTypeId);
             }
-
         });
 
-        mAdapter = new DataQueryAdapter(this,listData);
+        mAdapter = new DataQueryAdapter(this,materialList);
         mRecyclerView.setAdapter(mAdapter);
+        return inflate;
     }
 
-    private List<DataInterpretationBean> getData() {
-        List<DataInterpretationBean> data = new ArrayList<DataInterpretationBean>();
-        String[] titles = mContext.getResources().getStringArray(R.array.data_interpretation_titles);
-        String[] times = mContext.getResources().getStringArray(R.array.data_interpretation_time);
-        String[] urls = mContext.getResources().getStringArray(R.array.data_interpretation_urls);
-        String[] imgUrls = mContext.getResources().getStringArray(R.array.data_interpretation_img_urls);
+    @Override
+    public void initData() {
 
-        DataInterpretationBean bean;
-        for(int i = 0; i < titles.length ;i++){
-            bean = new DataInterpretationBean();
-            bean.setTitle(titles[i]);
-            bean.setCreatetime(times[i]);
-            bean.setUrl(urls[i]);
-            // bean.setImgResId(R.drawable.home_01);
-            bean.setImgUrl(imgUrls[i]);
-            data.add(bean);
-        }
-        return data;
+    }
+
+    private void getTypes() {
+        RequestParams params = new RequestParams(Urls.URL_APP_TYPES);
+        params.addParameter("columnId","4");
+
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Gson gson = new Gson();
+                DataReleaseBean bean = gson.fromJson(result, DataReleaseBean.class);
+                List<DataReleaseBean.TypesListBean> list = bean.getTypesList();
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+                linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                rvTypes.setLayoutManager(linearLayoutManager);
+                typeAdapter = new InterpretationTypeAdapter(DataQueryFragment.this, list);
+                rvTypes.setAdapter(typeAdapter);
+                getArticleData(list.get(0).getId());
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+
+    /**
+     * 获取文章列表
+     * @param typeId
+     */
+    private void getArticleData(int typeId) {
+        currentTypeId = typeId;
+        RequestParams entity = new RequestParams(Urls.URL_APP_MATERIAL);
+        entity.addParameter("typeId",currentTypeId);
+        entity.addParameter("currentPage", currentPage);
+        entity.addParameter("pageSize", pageSize);
+        x.http().get(entity, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                LogUtil.e("onSuccess: result = " + result);
+                Gson gson = new Gson();
+                MaterialBean materialBean = gson.fromJson(result, MaterialBean.class);
+
+                if(currentPage > materialBean.getTotalPage()){
+                    // 没有更多
+                    ToastAlone.showShortToast("没有更多数据");
+                    mRecyclerView.setNoMore(true);
+                }else if(currentPage == 1){
+                    // 下拉刷新
+                    materialList = materialBean.getMaterialList();
+                    mAdapter.setData(materialList);
+                    mRecyclerView.refreshComplete();
+                }else{
+                    // 加载更多
+                    materialList = materialBean.getMaterialList();
+                    mAdapter.addData(materialList);
+                    mRecyclerView.loadMoreComplete();
+                }
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ToastAlone.showShortToast("获取数据失败");
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 
 
     @Override
     public void onClick(View v) {
-        DataInterpretationBean bean;
+        MaterialBean.MaterialListBean bean;
         switch (v.getId()) {
             case R.id.rl_item:
-                bean = (DataInterpretationBean) v.getTag();
-                Intent intent = new Intent(mContext, DataDetailsActivity.class);
-                intent.putExtra("DataDetails", bean);
-                mContext.startActivity(intent);
+
+                /*bean = (DataInterpretationBean) v.getTag();
+                if (bean != null) {
+                    ToastAlone.showShortToast("内容为空");
+                }else{
+                    Intent intent = new Intent(mContext, DataDetailsActivity.class);
+                    intent.putExtra("DataDetails", bean);
+                    mContext.startActivity(intent);
+                }*/
                 break;
 
             case R.id.tv_down:
                 // 下载
-                bean = (DataInterpretationBean) v.getTag();
-                ToastAlone.showShortToast("下载文件:" + bean.getTitle());
+                bean = (MaterialBean.MaterialListBean) v.getTag();
+                ToastAlone.showShortToast("下载文件:" + bean.getName());
+                break;
+
+            case R.id.rl_type_item:
+                // 点击类型,刷新文章列表
+                int position = (int) v.getTag();
+                DataReleaseBean.TypesListBean type = (DataReleaseBean.TypesListBean) v.getTag(R.id.rl_type_item);
+                typeAdapter.setCurrentPosition(position);
+                getArticleData(type.getId());
                 break;
         }
     }

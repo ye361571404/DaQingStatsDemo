@@ -14,18 +14,29 @@ public class ColumnsBean implements Parcelable {
 
 
     /**
+     * color : 0
      * counts : 3
      * totalPage : 1
      * pageSize : 20
      * currentPage : 1
-     * columnsList : [{"columnIco":"http://202.97.194.240:9080/upload/1496314390839.jpg","columnName":"test1","createTime":1496314393000,"createUser":"18210281168","id":4,"isShow":0},{"columnIco":"","columnName":"数据解读","createTime":1495986391000,"createUser":"admin","id":2,"isShow":0},{"columnIco":"","columnName":"数据发布","createTime":1495986371000,"createUser":"admin","id":1,"isShow":0}]
+     * columnsList : [{"columnIco":"http://202.97.194.240:9080/upload/home_01.png","columnName":"数据发布","createTime":1495986371000,"createUser":"admin","id":1,"isShow":0},{"columnIco":"http://202.97.194.240:9080/upload/home_02.png","columnName":"数据解读","createTime":1495986391000,"createUser":"admin","id":2,"isShow":0},{"columnIco":"http://202.97.194.240:9080/upload/1496564778387.png","columnName":"数据查询","createTime":1496846758000,"createUser":"18210281168","id":4,"isShow":0}]
      */
 
+    /** 0：蓝色，1：红色 **/
+    private String color;
     private int counts;
     private int totalPage;
     private int pageSize;
     private int currentPage;
     private List<ColumnsListBean> columnsList;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 
     public int getCounts() {
         return counts;
@@ -69,11 +80,11 @@ public class ColumnsBean implements Parcelable {
 
     public static class ColumnsListBean implements Parcelable {
         /**
-         * columnIco : http://202.97.194.240:9080/upload/1496314390839.jpg
-         * columnName : test1
-         * createTime : 1496314393000
-         * createUser : 18210281168
-         * id : 4
+         * columnIco : http://202.97.194.240:9080/upload/home_01.png
+         * columnName : 数据发布
+         * createTime : 1495986371000
+         * createUser : admin
+         * id : 1
          * isShow : 0
          */
 
@@ -82,7 +93,6 @@ public class ColumnsBean implements Parcelable {
         private long createTime;
         private String createUser;
         private int id;
-        /** 0:显示    1:不显示 **/
         private int isShow;
 
         public String getColumnIco() {
@@ -180,6 +190,7 @@ public class ColumnsBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.color);
         dest.writeInt(this.counts);
         dest.writeInt(this.totalPage);
         dest.writeInt(this.pageSize);
@@ -191,6 +202,7 @@ public class ColumnsBean implements Parcelable {
     }
 
     protected ColumnsBean(Parcel in) {
+        this.color = in.readString();
         this.counts = in.readInt();
         this.totalPage = in.readInt();
         this.pageSize = in.readInt();

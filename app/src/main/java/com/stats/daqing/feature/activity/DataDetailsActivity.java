@@ -47,6 +47,11 @@ public class DataDetailsActivity extends BaseActivity {
         // initWebView();
     }
 
+    private void revMsg() {
+        Intent intent = getIntent();
+        articles = intent.getParcelableExtra("articles");
+    }
+
     private void initData() {
         tvTitle.setText(articles.getTitle());
         tvTime.setText(TimeUtil.millisecond2DateStr(articles.getCreateTime()));
@@ -54,10 +59,7 @@ public class DataDetailsActivity extends BaseActivity {
 
     }
 
-    private void revMsg() {
-        Intent intent = getIntent();
-        articles = intent.getParcelableExtra("articles");
-    }
+
 
 
     private void initView() {

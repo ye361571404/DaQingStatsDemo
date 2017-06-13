@@ -74,7 +74,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         assignViews();
         initData();
         getData();
-        setTheme();
         getArticles();
 
     }
@@ -171,37 +170,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                 mAdapter.setData(columnsList);
                 swipeRefres.setRefreshing(false);
-            }
 
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-
-            }
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-
-            }
-
-            @Override
-            public void onFinished() {
-
-            }
-        });
-    }
-
-
-    private void setTheme(){
-
-        x.http().get(new RequestParams(Urls.URL_APP_BACKCOLOR), new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                Gson gson = new Gson();
-                ResultBean bean = gson.fromJson(result, ResultBean.class);
-                if (TextUtils.equals(bean.getResult(),"0")) {
+                // 设置主题背景色
+                if (TextUtils.equals(bean.getColor(),"0")) {
                     // 蓝色
                     mCurrentTheme = ThemeHelper.CARD_STORM;
-                }else if(TextUtils.equals(bean.getResult(),"1")){
+                }else if(TextUtils.equals(bean.getColor(),"1")){
                     // 红色
                     mCurrentTheme = ThemeHelper.CARD_FIREY;
                 }
@@ -224,7 +198,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         });
     }
-
 
 
     /**

@@ -3,11 +3,13 @@ package com.stats.daqing.feature.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateUtils;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,6 +26,9 @@ import org.apache.commons.lang.math.NumberUtils;
 
 import java.util.ArrayList;
 
+/**
+ * 文章详情
+ */
 public class ArticlesActivity extends BaseActivity implements View.OnClickListener {
 
     private TintToolbar mToolBar;
@@ -172,6 +177,7 @@ public class ArticlesActivity extends BaseActivity implements View.OnClickListen
         ArticlesBean.ArticlesListBean bean;
         switch (v.getId()) {
             case R.id.ll_previsou:
+                // 上一篇
                 if (currentPosition > 0) {
                     currentPosition--;
                     bean = articlesList.get(currentPosition);
@@ -182,6 +188,7 @@ public class ArticlesActivity extends BaseActivity implements View.OnClickListen
                 break;
 
             case R.id.ll_next:
+                // 下一篇
                 if (articlesList != null && currentPosition < articlesList.size() - 1) {
                     currentPosition++;
                     bean = articlesList.get(currentPosition);

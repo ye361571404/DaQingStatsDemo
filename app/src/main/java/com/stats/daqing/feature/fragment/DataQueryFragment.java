@@ -1,33 +1,27 @@
 package com.stats.daqing.feature.fragment;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.stats.daqing.R;
 import com.stats.daqing.base.BasePager;
-import com.stats.daqing.bean.ArticlesBean;
-import com.stats.daqing.bean.DataInterpretationBean;
 import com.stats.daqing.bean.DataReleaseBean;
 import com.stats.daqing.bean.MaterialBean;
 import com.stats.daqing.common.ToastAlone;
 import com.stats.daqing.common.Urls;
-import com.stats.daqing.feature.activity.DataDetailsActivity;
-import com.stats.daqing.feature.adapter.DataInterpretationAdapter;
 import com.stats.daqing.feature.adapter.DataQueryAdapter;
 import com.stats.daqing.feature.adapter.InterpretationTypeAdapter;
+import com.stats.daqing.feature.download.DownloadManager;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.xutils.common.Callback;
 import org.xutils.common.util.LogUtil;
+import org.xutils.ex.DbException;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
@@ -219,11 +213,24 @@ public class DataQueryFragment extends BasePager implements View.OnClickListener
             case R.id.tv_down:
                 // 下载
                 bean = (MaterialBean.MaterialListBean) v.getTag();
-                ToastAlone.showShortToast("下载文件:" + bean.getName());
+                String fileName = bean.getName();
+                String fileUrl = bean.getFileUrl();
+                // fileUrl = "http://pic.hualongxiang.com/app/image/2010/1222/15-45-13-328996514.s.480x360.jpg";
+                // fileUrl = "http://dl.bintray.com/wyouflf/maven/org/xutils/xutils/3.5.0/xutils-3.5.0.aar";
+                int endIndex = fileUrl.lastIndexOf(".");
+                String end = fileUrl.substring(endIndex);
+                try {
+                    DownloadManager.getInstance().startDownload(fileUrl, fileName, "/sdcard/DaQingStats/" + fileName + end, true, false, null);
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
+                ToastAlone.showShortToast("下载文件:" + fileName);
+
                 break;
 
             case R.id.rl_type_item:
                 // 点击类型,刷新文章列表
+                currentPage = 1;
                 int position = (int) v.getTag();
                 DataReleaseBean.TypesListBean type = (DataReleaseBean.TypesListBean) v.getTag(R.id.rl_type_item);
                 typeAdapter.setCurrentPosition(position);

@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.bilibili.magicasakura.widgets.TintToolbar;
 import com.stats.daqing.R;
@@ -18,7 +19,6 @@ import com.stats.daqing.feature.adapter.ColumnPagerAdapter;
 import com.stats.daqing.feature.fragment.DataInterpretationFragment;
 import com.stats.daqing.feature.fragment.DataQueryFragment;
 import com.stats.daqing.feature.fragment.DataRelease2Fragment;
-import com.stats.daqing.feature.fragment.DataReleaseFragment;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -33,7 +33,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.Simple
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataActivity extends BaseActivity {
+public class DataActivity extends BaseActivity implements View.OnClickListener {
 
     private List<String> titles;
 
@@ -43,6 +43,7 @@ public class DataActivity extends BaseActivity {
     private List<ColumnsBean.ColumnsListBean> items;
     private TintToolbar mToolBar;
     private List<BasePager> pagers;
+    private ImageView ivDown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,21 +52,11 @@ public class DataActivity extends BaseActivity {
         revMsg();
         initVariable();
         initView();
-
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mExamplePagerAdapter = new ColumnPagerAdapter(pagers,titles);
-        mViewPager.setAdapter(mExamplePagerAdapter);
+        setListener();
 
         initMagicIndicator4();
     }
 
-    private void initView() {
-        mToolBar = (TintToolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolBar);
-        getSupportActionBar().setTitle(null);
-        // 设置返回按钮
-        getSupportActionBar().setHomeButtonEnabled(true);
-    }
 
     private void initVariable() {
         titles = new ArrayList<>();
@@ -81,6 +72,27 @@ public class DataActivity extends BaseActivity {
         // 数据查询
         pagers.add(new DataQueryFragment(DataActivity.this));
     }
+
+
+    private void initView() {
+        ivDown = (ImageView)findViewById(R.id.iv_down);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mExamplePagerAdapter = new ColumnPagerAdapter(pagers,titles);
+        mViewPager.setAdapter(mExamplePagerAdapter);
+
+        mToolBar = (TintToolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolBar);
+        getSupportActionBar().setTitle(null);
+        // 设置返回按钮
+        getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+
+    private void setListener() {
+        ivDown.setOnClickListener(this);
+    }
+
+
 
     private void revMsg() {
         Intent intent = getIntent();
@@ -138,5 +150,16 @@ public class DataActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+            case R.id.iv_down:
+                Intent intent = new Intent(DataActivity.this, DownloadActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }

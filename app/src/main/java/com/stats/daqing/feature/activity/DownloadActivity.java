@@ -121,7 +121,7 @@ public class DownloadActivity extends AppCompatActivity {
                             downloadInfo.getFileSavePath(),
                             downloadInfo.isAutoResume(),
                             downloadInfo.isAutoRename(),
-                            holder);
+                            holder,null);
                 } catch (DbException ex) {
                     Toast.makeText(x.app(), "添加下载失败", Toast.LENGTH_LONG).show();
                 }
@@ -163,7 +163,7 @@ public class DownloadActivity extends AppCompatActivity {
                                 downloadInfo.getFileSavePath(),
                                 downloadInfo.isAutoResume(),
                                 downloadInfo.isAutoRename(),
-                                this);
+                                this,null);
                     } catch (DbException ex) {
                         Toast.makeText(x.app(), "添加下载失败", Toast.LENGTH_LONG).show();
                     }

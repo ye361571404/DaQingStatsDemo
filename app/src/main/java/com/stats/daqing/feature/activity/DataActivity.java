@@ -102,7 +102,6 @@ public class DataActivity extends BaseActivity implements View.OnClickListener {
         Intent intent = getIntent();
         currentPosition = intent.getIntExtra("position", 0);
         items = intent.getParcelableArrayListExtra("items");
-        ToastAlone.showShortToast("position = " + currentPosition);
     }
 
 

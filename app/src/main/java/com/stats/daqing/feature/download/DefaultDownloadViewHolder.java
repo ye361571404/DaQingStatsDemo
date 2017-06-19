@@ -13,8 +13,11 @@ import java.io.File;
  */
 public class DefaultDownloadViewHolder extends DownloadViewHolder {
 
-    public DefaultDownloadViewHolder(View view, DownloadInfo downloadInfo) {
+    private Runnable runnable;
+
+    public DefaultDownloadViewHolder(View view, DownloadInfo downloadInfo, Runnable runnable) {
         super(view, downloadInfo);
+        this.runnable = runnable;
     }
 
     @Override
@@ -34,6 +37,9 @@ public class DefaultDownloadViewHolder extends DownloadViewHolder {
 
     @Override
     public void onSuccess(File result) {
+        if (runnable != null) {
+            runnable.run();
+        }
         Toast.makeText(x.app(), "下载完成", Toast.LENGTH_LONG).show();
     }
 

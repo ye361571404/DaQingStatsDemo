@@ -93,7 +93,7 @@ public final class DownloadManager {
      */
     public synchronized void startDownload(String url, String label, String savePath,
                                            boolean autoResume, boolean autoRename,
-                                           DownloadViewHolder viewHolder) throws DbException {
+                                           DownloadViewHolder viewHolder,Runnable runnable) throws DbException {
 
         String fileSavePath = new File(savePath).getAbsolutePath();
         DownloadInfo downloadInfo = db.selector(DownloadInfo.class)
@@ -104,7 +104,7 @@ public final class DownloadManager {
             DownloadCallback callback = callbackMap.get(downloadInfo);
             if (callback != null) {
                 if (viewHolder == null) {
-                    viewHolder = new DefaultDownloadViewHolder(null, downloadInfo);
+                    viewHolder = new DefaultDownloadViewHolder(null, downloadInfo,runnable);
                 }
                 if (callback.switchViewHolder(viewHolder)) {
                     return;
@@ -127,7 +127,7 @@ public final class DownloadManager {
 
         // start downloading
         if (viewHolder == null) {
-            viewHolder = new DefaultDownloadViewHolder(null, downloadInfo);
+            viewHolder = new DefaultDownloadViewHolder(null, downloadInfo, runnable);
         } else {
             viewHolder.update(downloadInfo);
         }

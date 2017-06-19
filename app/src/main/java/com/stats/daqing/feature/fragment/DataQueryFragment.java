@@ -12,6 +12,7 @@ import android.view.View;
 import com.google.gson.Gson;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.litesuits.common.utils.HandlerUtil;
 import com.stats.daqing.R;
 import com.stats.daqing.base.BasePager;
 import com.stats.daqing.bean.DataReleaseBean;
@@ -220,7 +221,18 @@ public class DataQueryFragment extends BasePager implements View.OnClickListener
                 int endIndex = fileUrl.lastIndexOf(".");
                 String end = fileUrl.substring(endIndex);
                 try {
-                    DownloadManager.getInstance().startDownload(fileUrl, fileName, "/sdcard/" + Constants.APP_CACHE_DIR_CRASH+ "/" + fileName + end, true, false, null);
+                    DownloadManager.getInstance().startDownload(fileUrl, fileName, "/sdcard/" + Constants.APP_CACHE_DIR_CRASH + "/" + fileName + end, true, false, null, new Runnable() {
+                        @Override
+                        public void run() {
+                            HandlerUtil.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // 下载完成后,刷新数据
+                                    mAdapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    });
                 } catch (DbException e) {
                     e.printStackTrace();
                 }

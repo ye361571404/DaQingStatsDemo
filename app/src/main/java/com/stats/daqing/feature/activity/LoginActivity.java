@@ -1,10 +1,8 @@
 package com.stats.daqing.feature.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +13,6 @@ import android.widget.TextView;
 import com.bilibili.magicasakura.widgets.TintToolbar;
 import com.stats.daqing.R;
 import com.stats.daqing.base.BaseActivity;
-import com.youth.banner.Banner;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
@@ -53,9 +50,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         logSubmit = (Button) findViewById(R.id.log_submit);
 
         setSupportActionBar(mToolBar);
-        getSupportActionBar().setTitle(null);
-        // 设置返回按钮
-        getSupportActionBar().setHomeButtonEnabled(true);
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(null);
+            // 设置返回按钮
+            supportActionBar.setHomeButtonEnabled(true);
+        }
     }
 
 

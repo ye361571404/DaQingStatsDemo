@@ -68,7 +68,7 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.ViewHolder
     }
 
     public void addData(List<ColumnsBean.ColumnsListBean> columnsList) {
-        this.items.addAll(items);
+        this.items.addAll(columnsList);
         notifyDataSetChanged();
     }
 

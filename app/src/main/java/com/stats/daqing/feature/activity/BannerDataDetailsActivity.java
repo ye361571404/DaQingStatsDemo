@@ -2,8 +2,7 @@ package com.stats.daqing.feature.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -15,9 +14,6 @@ import android.widget.ProgressBar;
 import com.bilibili.magicasakura.widgets.TintToolbar;
 import com.stats.daqing.R;
 import com.stats.daqing.base.BaseActivity;
-import com.stats.daqing.bean.DataInterpretationBean;
-import com.stats.daqing.bean.MainItemBean;
-import com.stats.daqing.common.ThemeHelper;
 
 public class BannerDataDetailsActivity extends BaseActivity {
 
@@ -51,9 +47,12 @@ public class BannerDataDetailsActivity extends BaseActivity {
         // setTitle("");
         mToolBar = (TintToolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
-        getSupportActionBar().setTitle(null);
-        // 设置返回按钮
-        getSupportActionBar().setHomeButtonEnabled(true);
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(null);
+            // 设置返回按钮
+            supportActionBar.setHomeButtonEnabled(true);
+        }
     }
 
 

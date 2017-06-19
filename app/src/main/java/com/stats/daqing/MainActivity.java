@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -111,7 +112,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         swipeRefres = (SwipeRefreshLayout)findViewById(R.id.swipeRefres);
         mToolBar = (TintToolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
-        getSupportActionBar().setTitle(null);
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(null);
+        }
+
         mBanner = (Banner) findViewById(R.id.banner);
         rvContent = (RecyclerView)findViewById(R.id.rv_content);
 

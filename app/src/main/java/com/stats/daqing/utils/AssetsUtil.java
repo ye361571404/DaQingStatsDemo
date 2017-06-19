@@ -62,7 +62,7 @@ public class AssetsUtil {
     public static List<File> getFiles(String dirName) {
         AssetManager assetManager = getAssets();
         List<File> files = new ArrayList<>();
-        String[] fileNames = null;
+        String[] fileNames;
         try {
             fileNames = assetManager.list(dirName);
             for (int i = 0; i < fileNames.length; i++) {

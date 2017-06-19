@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -82,9 +83,12 @@ public class DataActivity extends BaseActivity implements View.OnClickListener {
 
         mToolBar = (TintToolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
-        getSupportActionBar().setTitle(null);
-        // 设置返回按钮
-        getSupportActionBar().setHomeButtonEnabled(true);
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(null);
+            // 设置返回按钮
+            supportActionBar.setHomeButtonEnabled(true);
+        }
     }
 
 

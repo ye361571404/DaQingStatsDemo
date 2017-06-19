@@ -11,8 +11,11 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.stats.daqing.R;
 import com.stats.daqing.bean.MaterialBean;
+import com.stats.daqing.common.Constants;
+import com.stats.daqing.utils.StorageUtil;
 import com.stats.daqing.utils.TimeUtil;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -41,7 +44,7 @@ public class DataQueryAdapter extends RecyclerView.Adapter<DataQueryAdapter.View
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         MaterialBean.MaterialListBean bean = datas.get(position);
 
-        viewHolder.rlItem.setTag(bean);
+        //viewHolder.rlItem.setTag(bean);
         viewHolder.rlItem.setOnClickListener(onClickListener);
         viewHolder.tvDown.setTag(bean);
         viewHolder.tvDown.setOnClickListener(onClickListener);
@@ -53,6 +56,19 @@ public class DataQueryAdapter extends RecyclerView.Adapter<DataQueryAdapter.View
         }
         imageLoader.displayImage(bean.getImgUrl(),viewHolder.ivInfo);
 
+
+        // 判断文件是否已下载
+        String fileName = bean.getFileName();
+        int endIndex = fileName.lastIndexOf(".");
+        String end = fileName.substring(endIndex);
+        fileName = bean.getName() + end;
+        File file = StorageUtil.getAppCustomCacheDirectory(Constants.APP_CACHE_DIR_CRASH + File.separator + fileName);
+        if (file.exists()) {
+            viewHolder.tvDown.setText("已下载");
+            viewHolder.rlItem.setTag(file);
+        }else{
+            viewHolder.tvDown.setText("下载");
+        }
     }
 
     @Override

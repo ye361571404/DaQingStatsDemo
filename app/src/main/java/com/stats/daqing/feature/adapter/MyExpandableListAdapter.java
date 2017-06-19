@@ -103,7 +103,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        GroupHolder groupHolder = null;
+        GroupHolder groupHolder;
         if (convertView == null) {
             convertView = View.inflate(mContext, R.layout.item_release_group, null);
             groupHolder = new GroupHolder();
@@ -126,7 +126,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        ChildHolder childHolder = null;
+        ChildHolder childHolder;
         if (convertView == null) {
             convertView = View.inflate(mContext, R.layout.item_release_child, null);
             childHolder = new ChildHolder();

@@ -36,7 +36,6 @@ public class ColumnPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        TextView textView = new TextView(container.getContext());
         BasePager basePager = mDataList.get(position);
         container.addView(basePager.getRootView());
         return basePager.getRootView();

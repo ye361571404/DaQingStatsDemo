@@ -2,6 +2,7 @@ package com.stats.daqing.feature.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -51,10 +52,12 @@ public class DownloadActivity extends AppCompatActivity {
         x.view().inject(this);
 
         setSupportActionBar(mToolBar);
-        getSupportActionBar().setTitle(null);
-        // 设置返回按钮
-        getSupportActionBar().setHomeButtonEnabled(true);
-
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(null);
+            // 设置返回按钮
+            supportActionBar.setHomeButtonEnabled(true);
+        }
         downloadManager = DownloadManager.getInstance();
         downloadListAdapter = new DownloadListAdapter();
         downloadList.setAdapter(downloadListAdapter);
@@ -98,7 +101,7 @@ public class DownloadActivity extends AppCompatActivity {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            DownloadItemViewHolder holder = null;
+            DownloadItemViewHolder holder;
             DownloadInfo downloadInfo = downloadManager.getDownloadInfo(i);
             if (view == null) {
                 view = mInflater.inflate(R.layout.download_item, null);

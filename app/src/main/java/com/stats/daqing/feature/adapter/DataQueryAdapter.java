@@ -64,11 +64,11 @@ public class DataQueryAdapter extends RecyclerView.Adapter<DataQueryAdapter.View
         fileName = bean.getName() + end;
         File file = StorageUtil.getAppCustomCacheDirectory(Constants.APP_CACHE_DIR_CRASH + File.separator + fileName);
         if (file.exists()) {
-            // viewHolder.tvDown.setText("已下载");
-            viewHolder.tvDown.setVisibility(View.INVISIBLE);
+            viewHolder.tvDown.setClickable(false);
+            viewHolder.tvDown.setText("已下载");
             viewHolder.rlItem.setTag(file);
         }else{
-            viewHolder.tvDown.setVisibility(View.VISIBLE);
+            viewHolder.tvDown.setClickable(true);
             viewHolder.tvDown.setText("下载");
         }
     }

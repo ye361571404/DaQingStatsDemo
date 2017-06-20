@@ -265,20 +265,25 @@ public class DataQueryFragment extends BasePager implements View.OnClickListener
             ToastAlone.showShortToast("文件不存在,请先下载");
             return;
         }
-        Uri photoURI = FileProvider.getUriForFile(mContext, "com.stats.daqing.fileprovider", file);
+        try {
+            Uri photoURI = FileProvider.getUriForFile(mContext, "com.stats.daqing.fileprovider", file);
 
-        Intent intent = new Intent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        //设置intent的Action属性
-        intent.setAction(Intent.ACTION_VIEW);
-        //获取文件file的MIME类型
-        String type = getMIMEType(file);
-        //设置intent的data和Type属性。
-        intent.setDataAndType(photoURI, type);
-        // intent.setDataAndType(/*uri*/Uri.fromFile(file), type);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        mContext.startActivity(intent);
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            //设置intent的Action属性
+            intent.setAction(Intent.ACTION_VIEW);
+            //获取文件file的MIME类型
+            String type = getMIMEType(file);
+            //设置intent的data和Type属性。
+            intent.setDataAndType(photoURI, type);
+            // intent.setDataAndType(/*uri*/Uri.fromFile(file), type);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            mContext.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastAlone.showShortToast("请到应用市场下载 WPS APP");
+        }
 
     }
 

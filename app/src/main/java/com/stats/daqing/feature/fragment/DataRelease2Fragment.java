@@ -70,6 +70,8 @@ public class DataRelease2Fragment extends BasePager implements View.OnClickListe
 
         RequestParams params = new RequestParams(Urls.URL_APP_TYPES);
         params.addParameter("columnId","1");
+        // 传入该参数避免只获取默认20条数据
+        params.addParameter("pageSize","999");
         x.http().get(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {

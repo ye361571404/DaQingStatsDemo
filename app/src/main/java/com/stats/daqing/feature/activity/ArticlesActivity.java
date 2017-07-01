@@ -8,17 +8,26 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bilibili.magicasakura.widgets.TintToolbar;
+import com.litesuits.common.io.FileUtils;
+import com.litesuits.common.utils.FileUtil;
 import com.stats.daqing.R;
 import com.stats.daqing.base.BaseActivity;
 import com.stats.daqing.bean.ArticlesBean;
+import com.stats.daqing.common.Constants;
 import com.stats.daqing.common.ToastAlone;
+import com.stats.daqing.utils.StorageUtil;
 import com.stats.daqing.utils.TimeUtil;
 
+import org.apache.commons.lang.math.NumberUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -90,7 +99,10 @@ public class ArticlesActivity extends BaseActivity implements View.OnClickListen
         tvNextContent = (TextView)findViewById(R.id.tv_next_content);
 
         webView = (WebView) findViewById(R.id.webview);
-        WebSettings webSettings = webView.getSettings();
+        initWebView();
+
+
+        /*WebSettings webSettings = webView.getSettings();
         webSettings.setBuiltInZoomControls(true);
         webView.setWebChromeClient(new WebChromeClient() {
 
@@ -107,7 +119,11 @@ public class ArticlesActivity extends BaseActivity implements View.OnClickListen
                 super.onProgressChanged(view, newProgress);
             }
 
-        });
+        });*/
+
+
+
+
 
         setSupportActionBar(mToolBar);
         ActionBar supportActionBar = getSupportActionBar();
@@ -116,6 +132,50 @@ public class ArticlesActivity extends BaseActivity implements View.OnClickListen
             // 设置返回按钮
             supportActionBar.setHomeButtonEnabled(true);
         }
+    }
+
+
+    private void initWebView() {
+        WebSettings webSettings = webView.getSettings();
+        //设置支持javaScript脚步语言
+        webSettings.setJavaScriptEnabled(true);
+
+        //支持双击-前提是页面要支持才显示
+//        webSettings.setUseWideViewPort(true);
+
+        //支持缩放按钮-前提是页面要支持才显示
+        webSettings.setBuiltInZoomControls(true);
+
+        //设置客户端-不跳转到默认浏览器中
+        webView.setWebViewClient(new WebViewClient());
+
+        //设置支持js调用java
+        // wvContent.addJavascriptInterface(new AndroidAndJSInterface(),"Android");
+
+
+        //加载网络资源
+//        wvContent.loadUrl("http://10.0.2.2:8080/assets/JavaAndJavaScriptCall.html");
+        // webView.loadUrl("file:///android_asset/table.htm");
+        // webView.loadUrl("file:///mnt/sdcard/table.htm");
+
+
+        webView.setWebChromeClient(new WebChromeClient() {
+
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                if (newProgress == 100) {
+                    bar.setVisibility(View.INVISIBLE);
+                } else {
+                    if (View.INVISIBLE == bar.getVisibility()) {
+                        bar.setVisibility(View.VISIBLE);
+                    }
+                    bar.setProgress(newProgress);
+                }
+                super.onProgressChanged(view, newProgress);
+            }
+
+        });
+
     }
 
     private void initData() {
@@ -128,29 +188,39 @@ public class ArticlesActivity extends BaseActivity implements View.OnClickListen
         bean = articlesList.get(currentPosition);
         tvTitle.setText(bean.getTitle());
         tvTime.setText(TimeUtil.millisecond2DateStr(bean.getCreateTime()));
-        webView.loadDataWithBaseURL(null,bean.getContent(),"text/html", "utf-8", null);
+        // webView.loadDataWithBaseURL(null,bean.getContent(),"text/html", "utf-8", null);
+
+
+        File file = StorageUtil.getAppCustomCacheDirectory(Constants.APP_CACHE_DIR_CRASH + File.separator + "table.html");
+        try {
+            FileUtils.writeStringToFile(file,bean.getContent());
+            webView.loadUrl("file:///mnt/sdcard/DaQingStats/files/table.html");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         // 设置上一篇下一篇按钮状态
         if (articlesList.size() == 1) {
             llPrevisou.setVisibility(View.GONE);
-            tvPrevious.setTextColor(getResources().getColor(R.color.background_gray));
-            tvPreviousContent.setTextColor(getResources().getColor(R.color.background_gray));
+            // tvPrevious.setTextColor(getResources().getColor(R.color.background_gray));
+            // tvPreviousContent.setTextColor(getResources().getColor(R.color.background_gray));
             tvPreviousContent.setText("");
 
             llNext.setVisibility(View.GONE);
-            tvNext.setTextColor(getResources().getColor(R.color.background_gray));
-            tvNextContent.setTextColor(getResources().getColor(R.color.background_gray));
+            // tvNext.setTextColor(getResources().getColor(R.color.background_gray));
+            // tvNextContent.setTextColor(getResources().getColor(R.color.background_gray));
             tvNextContent.setText("");
         }else{
             bean = articlesList.get(currentPosition + 1);
             llPrevisou.setVisibility(View.GONE);
-            tvPrevious.setTextColor(getResources().getColor(R.color.background_gray));
-            tvPreviousContent.setTextColor(getResources().getColor(R.color.background_gray));
+            // tvPrevious.setTextColor(getResources().getColor(R.color.background_gray));
+            // tvPreviousContent.setTextColor(getResources().getColor(R.color.background_gray));
             tvPreviousContent.setText("");
 
             llNext.setVisibility(View.VISIBLE);
-            tvNext.setTextColor(getResources().getColor(R.color.red));
-            tvNextContent.setTextColor(getResources().getColor(R.color.red));
+            // tvNext.setTextColor(getResources().getColor(R.color.red));
+            // tvNextContent.setTextColor(getResources().getColor(R.color.red));
             tvNextContent.setText(bean.getTitle());
         }
 
@@ -181,7 +251,15 @@ public class ArticlesActivity extends BaseActivity implements View.OnClickListen
                     bean = articlesList.get(currentPosition);
                     tvTitle.setText(bean.getTitle());
                     tvTime.setText(TimeUtil.millisecond2DateStr(bean.getCreateTime()));
-                    webView.loadDataWithBaseURL(null,bean.getContent(),"text/html", "utf-8", null);
+                    // webView.loadDataWithBaseURL(null,bean.getContent(),"text/html", "utf-8", null);
+
+                    File file = StorageUtil.getAppCustomCacheDirectory(Constants.APP_CACHE_DIR_CRASH + File.separator + "table.html");
+                    try {
+                        FileUtils.writeStringToFile(file,bean.getContent());
+                        webView.loadUrl("file:///mnt/sdcard/DaQingStats/files/table.html");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
 
@@ -192,7 +270,14 @@ public class ArticlesActivity extends BaseActivity implements View.OnClickListen
                     bean = articlesList.get(currentPosition);
                     tvTitle.setText(bean.getTitle());
                     tvTime.setText(TimeUtil.millisecond2DateStr(bean.getCreateTime()));
-                    webView.loadDataWithBaseURL(null,bean.getContent(),"text/html", "utf-8", null);
+                    // webView.loadDataWithBaseURL(null,bean.getContent(),"text/html", "utf-8", null);
+                    File file = StorageUtil.getAppCustomCacheDirectory(Constants.APP_CACHE_DIR_CRASH + File.separator + "table.html");
+                    try {
+                        FileUtils.writeStringToFile(file,bean.getContent());
+                        webView.loadUrl("file:///mnt/sdcard/DaQingStats/files/table.html");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
         }
@@ -216,13 +301,13 @@ public class ArticlesActivity extends BaseActivity implements View.OnClickListen
                 title = bean1.getTitle();
             }
             llPrevisou.setVisibility(View.GONE);
-            tvPrevious.setTextColor(getResources().getColor(R.color.background_gray));
-            tvPreviousContent.setTextColor(getResources().getColor(R.color.background_gray));
+            // tvPrevious.setTextColor(getResources().getColor(R.color.background_gray));
+            // tvPreviousContent.setTextColor(getResources().getColor(R.color.background_gray));
             tvPreviousContent.setText("");
 
             llNext.setVisibility(View.VISIBLE);
-            tvNext.setTextColor(getResources().getColor(R.color.red));
-            tvNextContent.setTextColor(getResources().getColor(R.color.red));
+            // tvNext.setTextColor(getResources().getColor(R.color.red));
+            // tvNextContent.setTextColor(getResources().getColor(R.color.red));
             tvNextContent.setText(title);
 
         }else if(currentPosition == articlesList.size() - 1){
@@ -231,13 +316,13 @@ public class ArticlesActivity extends BaseActivity implements View.OnClickListen
             title = bean1.getTitle();
 
             llPrevisou.setVisibility(View.VISIBLE);
-            tvPrevious.setTextColor(getResources().getColor(R.color.red));
-            tvPreviousContent.setTextColor(getResources().getColor(R.color.red));
+            // tvPrevious.setTextColor(getResources().getColor(R.color.red));
+            // tvPreviousContent.setTextColor(getResources().getColor(R.color.red));
             tvPreviousContent.setText(title);
 
             llNext.setVisibility(View.GONE);
-            tvNext.setTextColor(getResources().getColor(R.color.background_gray));
-            tvNextContent.setTextColor(getResources().getColor(R.color.background_gray));
+            // tvNext.setTextColor(getResources().getColor(R.color.background_gray));
+            // tvNextContent.setTextColor(getResources().getColor(R.color.background_gray));
             tvNextContent.setText("");
 
         }else{
@@ -246,13 +331,13 @@ public class ArticlesActivity extends BaseActivity implements View.OnClickListen
             bean2 = articlesList.get(currentPosition + 1);
 
             llPrevisou.setVisibility(View.VISIBLE);
-            tvPrevious.setTextColor(getResources().getColor(R.color.red));
-            tvPreviousContent.setTextColor(getResources().getColor(R.color.red));
+            // tvPrevious.setTextColor(getResources().getColor(R.color.red));
+            // tvPreviousContent.setTextColor(getResources().getColor(R.color.red));
             tvPreviousContent.setText(bean1.getTitle());
 
             llNext.setVisibility(View.VISIBLE);
-            tvNext.setTextColor(getResources().getColor(R.color.red));
-            tvNextContent.setTextColor(getResources().getColor(R.color.red));
+            // tvNext.setTextColor(getResources().getColor(R.color.red));
+            // tvNextContent.setTextColor(getResources().getColor(R.color.red));
             tvNextContent.setText(bean2.getTitle());
         }
     }

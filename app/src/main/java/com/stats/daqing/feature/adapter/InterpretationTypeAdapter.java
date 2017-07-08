@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.stats.daqing.R;
 import com.stats.daqing.bean.DataReleaseBean;
+import com.stats.daqing.common.DaQingApplication;
+
+import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
@@ -59,14 +62,20 @@ public class InterpretationTypeAdapter extends RecyclerView.Adapter<Interpretati
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         private RelativeLayout rlTypeItem;
+        private RelativeLayout rlType;
         private View vLine;
         private TextView tvType;
 
         public ViewHolder(View itemView) {
             super(itemView);
             rlTypeItem = (RelativeLayout) itemView.findViewById(R.id.rl_type_item);
+            rlType = (RelativeLayout) itemView.findViewById(R.id.rl_type);
             vLine = itemView.findViewById(R.id.v_line);
             tvType = (TextView) itemView.findViewById(R.id.tv_type);
+
+            int screenWidth = UIUtil.getScreenWidth(DaQingApplication.getContext());
+            int itemWidth = screenWidth / 3;
+            rlType.getLayoutParams().width = itemWidth;
         }
     }
 

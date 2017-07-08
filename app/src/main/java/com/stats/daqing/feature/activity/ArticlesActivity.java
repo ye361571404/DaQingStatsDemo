@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * 文章详情
+ * 数据发布 - 文章详情
  */
 public class ArticlesActivity extends BaseActivity implements View.OnClickListener {
 

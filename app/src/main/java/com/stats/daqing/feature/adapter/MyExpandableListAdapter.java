@@ -24,6 +24,7 @@ import com.stats.daqing.bean.DataReleaseBean;
 import com.stats.daqing.common.ToastAlone;
 import com.stats.daqing.common.Urls;
 import com.stats.daqing.feature.activity.ArticlesActivity;
+import com.stats.daqing.feature.activity.ArticlesListActivity;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -203,7 +204,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
         }
     }
 
-    private void getArtcle(DataReleaseBean.TypesListBean bean) {
+    private void getArtcle(final DataReleaseBean.TypesListBean bean) {
         RequestParams entity = new RequestParams(Urls.URL_APP_ARTCLES);
         // entity.addParameter("typeId","10");
         entity.addParameter("typeId",bean.getId()+"");
@@ -216,8 +217,10 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
                 if (articlesList.isEmpty()) {
                     ToastAlone.showShortToast("数据为空");
                 }else{
-                    Intent intent = new Intent(mContext, ArticlesActivity.class);
+                    // Intent intent = new Intent(mContext, ArticlesActivity.class);
+                    Intent intent = new Intent(mContext, ArticlesListActivity.class);
                     intent.putParcelableArrayListExtra("articlesList", new ArrayList<Parcelable>(articlesList));
+                    intent.putExtra("title", bean.getTypeName());
                     mContext.startActivity(intent);
                 }
             }

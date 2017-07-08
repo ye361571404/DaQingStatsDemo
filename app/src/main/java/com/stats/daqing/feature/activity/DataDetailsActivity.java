@@ -18,7 +18,7 @@ import com.stats.daqing.bean.ArticlesBean;
 import com.stats.daqing.utils.TimeUtil;
 
 /**
- * 单篇文章详情
+ * 数据解读 - 文章详情
  */
 public class DataDetailsActivity extends BaseActivity {
 

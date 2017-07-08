@@ -40,22 +40,25 @@
             android:name=".feature.activity.RegistActivity"
             android:theme="@style/NoActionBar" />
         <activity android:name=".base.BaseActivity" />
-        <activity android:name=".feature.activity.ArticlesActivity"
-            android:theme="@style/NoActionBar" ></activity>
-
-        <activity android:name=".feature.activity.DownloadActivity"
-            android:theme="@style/NoActionBar" ></activity>
+        <activity
+            android:name=".feature.activity.ArticlesActivity"
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".feature.activity.DownloadActivity"
+            android:theme="@style/NoActionBar" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.stats.daqing.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
 
+        <activity android:name=".feature.activity.ArticlesListActivity"
+            android:theme="@style/NoActionBar" />
     </application>
 
 </manifest>

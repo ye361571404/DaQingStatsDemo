@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.stats.daqing.R;
 import com.stats.daqing.bean.ArticlesBean;
+import com.stats.daqing.bean.ArticlesTitlesBean;
 import com.stats.daqing.utils.TimeUtil;
 
 import java.util.ArrayList;
@@ -21,9 +22,9 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
 
 
     private View.OnClickListener onClickListener;
-    private List<ArticlesBean.ArticlesListBean> articlesList;
+    private List<ArticlesTitlesBean.ArticlesListBean> articlesList;
 
-    public ArticlesAdapter(View.OnClickListener onClickListener,List<ArticlesBean.ArticlesListBean> articlesList) {
+    public ArticlesAdapter(View.OnClickListener onClickListener,List<ArticlesTitlesBean.ArticlesListBean> articlesList) {
         this.onClickListener = onClickListener;
         if (articlesList == null) {
             articlesList = new ArrayList<>();
@@ -39,8 +40,9 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ArticlesBean.ArticlesListBean bean = articlesList.get(position);
+        ArticlesTitlesBean.ArticlesListBean bean = articlesList.get(position);
 
+        holder.rlItem.setTag(bean);
         holder.rlItem.setOnClickListener(onClickListener);
         holder.tvName.setText(bean.getTitle());
         holder.tvTime.setText(TimeUtil.millisecond2DateStr(bean.getCreateTime()));
@@ -49,6 +51,17 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ViewHo
     @Override
     public int getItemCount() {
         return articlesList.size();
+    }
+
+    public void setData(List<ArticlesTitlesBean.ArticlesListBean> articlesList) {
+        this.articlesList.clear();
+        this.articlesList.addAll(articlesList);
+        notifyDataSetChanged();
+    }
+
+    public void addData(List<ArticlesTitlesBean.ArticlesListBean> articlesList) {
+        this.articlesList.addAll(articlesList);
+        notifyDataSetChanged();
     }
 
 

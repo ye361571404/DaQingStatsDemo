@@ -1,5 +1,8 @@
 package com.stats.daqing.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
@@ -7,7 +10,7 @@ import java.util.List;
  * Created by Administrator on 2017/6/4.
  */
 
-public class DataReleaseBean {
+public class DataReleaseBean implements Parcelable {
 
 
     /**
@@ -64,7 +67,7 @@ public class DataReleaseBean {
         this.typesList = typesList;
     }
 
-    public static class TypesListBean {
+    public static class TypesListBean implements Parcelable {
         /**
          * createTime : 1496226554000
          * createUser : 18210281168
@@ -128,5 +131,81 @@ public class DataReleaseBean {
         public void setTypeName(String typeName) {
             this.typeName = typeName;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeLong(this.createTime);
+            dest.writeString(this.createUser);
+            dest.writeInt(this.id);
+            dest.writeInt(this.isShow);
+            dest.writeInt(this.parentId);
+            dest.writeString(this.typeName);
+        }
+
+        public TypesListBean() {
+        }
+
+        protected TypesListBean(Parcel in) {
+            this.createTime = in.readLong();
+            this.createUser = in.readString();
+            this.id = in.readInt();
+            this.isShow = in.readInt();
+            this.parentId = in.readInt();
+            this.typeName = in.readString();
+        }
+
+        public static final Parcelable.Creator<TypesListBean> CREATOR = new Parcelable.Creator<TypesListBean>() {
+            @Override
+            public TypesListBean createFromParcel(Parcel source) {
+                return new TypesListBean(source);
+            }
+
+            @Override
+            public TypesListBean[] newArray(int size) {
+                return new TypesListBean[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.counts);
+        dest.writeInt(this.currentPage);
+        dest.writeInt(this.pageSize);
+        dest.writeInt(this.totalPage);
+        dest.writeTypedList(this.typesList);
+    }
+
+    public DataReleaseBean() {
+    }
+
+    protected DataReleaseBean(Parcel in) {
+        this.counts = in.readInt();
+        this.currentPage = in.readInt();
+        this.pageSize = in.readInt();
+        this.totalPage = in.readInt();
+        this.typesList = in.createTypedArrayList(TypesListBean.CREATOR);
+    }
+
+    public static final Parcelable.Creator<DataReleaseBean> CREATOR = new Parcelable.Creator<DataReleaseBean>() {
+        @Override
+        public DataReleaseBean createFromParcel(Parcel source) {
+            return new DataReleaseBean(source);
+        }
+
+        @Override
+        public DataReleaseBean[] newArray(int size) {
+            return new DataReleaseBean[size];
+        }
+    };
 }

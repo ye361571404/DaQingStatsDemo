@@ -57,8 +57,11 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <activity android:name=".feature.activity.ArticlesListActivity"
+        <activity
+            android:name=".feature.activity.ArticlesListActivity"
             android:theme="@style/NoActionBar" />
+        <activity android:name=".feature.activity.BannerArticlesActivity"
+            android:theme="@style/NoActionBar"></activity>
     </application>
 
 </manifest>

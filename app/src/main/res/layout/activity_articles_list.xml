@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     tools:context="com.stats.daqing.feature.activity.ArticlesListActivity">
 
-    <android.support.v7.widget.RecyclerView
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/rv_content"
         android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+    </com.jcodecraeer.xrecyclerview.XRecyclerView>
 
 
     <com.bilibili.magicasakura.widgets.TintToolbar

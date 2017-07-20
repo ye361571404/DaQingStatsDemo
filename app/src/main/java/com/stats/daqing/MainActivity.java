@@ -25,6 +25,7 @@ import com.stats.daqing.common.ThemeHelper;
 import com.stats.daqing.common.ToastAlone;
 import com.stats.daqing.common.Urls;
 import com.stats.daqing.feature.activity.ArticlesActivity;
+import com.stats.daqing.feature.activity.BannerArticlesActivity;
 import com.stats.daqing.feature.activity.DataActivity;
 import com.stats.daqing.feature.activity.LoginActivity;
 import com.stats.daqing.feature.adapter.ColumnAdapter;
@@ -363,7 +364,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void OnBannerClick(int position) {
         if (articlesList != null) {
             ArticlesBean.ArticlesListBean bean = articlesList.get(position - 1);
-            Intent intent = new Intent(MainActivity.this, ArticlesActivity.class);
+            Intent intent = new Intent(MainActivity.this, BannerArticlesActivity.class);
             ArrayList<ArticlesBean.ArticlesListBean> value = new ArrayList<>();
             value.add(bean);
             intent.putExtra("articlesList", value);

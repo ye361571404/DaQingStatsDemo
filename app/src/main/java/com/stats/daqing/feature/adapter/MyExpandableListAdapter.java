@@ -199,7 +199,11 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter implement
             case R.id.tv_child_name:
                 DataReleaseBean.TypesListBean bean = (DataReleaseBean.TypesListBean) v.getTag(R.id.tv_child_name);
                 // ToastAlone.showShortToast("position = " + bean.getId());
-                getArtcle(bean);
+                Intent intent = new Intent(mContext, ArticlesListActivity.class);
+                intent.putExtra("dataReleaseBean", bean);
+                mContext.startActivity(intent);
+
+                // getArtcle(bean);
                 break;
         }
     }

@@ -14,12 +14,12 @@ import com.bilibili.magicasakura.widgets.TintToolbar;
 import com.google.gson.Gson;
 import com.stats.daqing.R;
 import com.stats.daqing.base.BaseActivity;
-import com.stats.daqing.bean.RegistResultBean;
+import com.stats.daqing.bean.LoginResultBean;
 import com.stats.daqing.common.ToastAlone;
 import com.stats.daqing.common.Urls;
+import com.stats.daqing.utils.SPUtil;
 
 import org.xutils.common.Callback;
-import org.xutils.common.util.LogUtil;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
@@ -105,10 +105,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             @Override
             public void onSuccess(String result) {
                 Gson gson = new Gson();
-                RegistResultBean resultBean = gson.fromJson(result, RegistResultBean.class);
+                LoginResultBean resultBean = gson.fromJson(result, LoginResultBean.class);
                 if (resultBean.getStatus() == 200) {
+                    SPUtil.setPreferences(SPUtil.TYPE_USER,"userInfo",result);
                     ToastAlone.showShortToast("登录成功");
                     finish();
+                    Intent intent = new Intent(LoginActivity.this, SettingActivity.class);
+                    startActivity(intent);
                 }else{
                     ToastAlone.showShortToast(resultBean.getMessage());
                 }

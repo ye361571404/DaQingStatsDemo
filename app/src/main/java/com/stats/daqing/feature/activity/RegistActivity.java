@@ -19,7 +19,7 @@ import com.google.gson.JsonParser;
 import com.stats.daqing.R;
 import com.stats.daqing.base.BaseActivity;
 import com.stats.daqing.bean.QuestionsBean;
-import com.stats.daqing.bean.RegistResultBean;
+import com.stats.daqing.bean.LoginResultBean;
 import com.stats.daqing.common.ToastAlone;
 import com.stats.daqing.common.Urls;
 
@@ -214,7 +214,7 @@ public class RegistActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onSuccess(String result) {
                 Gson gson = new Gson();
-                RegistResultBean resultBean = gson.fromJson(result, RegistResultBean.class);
+                LoginResultBean resultBean = gson.fromJson(result, LoginResultBean.class);
                 if (resultBean.getStatus() == 200) {
                     ToastAlone.showShortToast("注册成功");
                     Intent intent = new Intent(RegistActivity.this,LoginActivity.class);

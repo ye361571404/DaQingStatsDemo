@@ -63,8 +63,17 @@
         <activity
             android:name=".feature.activity.BannerArticlesActivity"
             android:theme="@style/NoActionBar" />
-        <activity android:name=".feature.activity.FindPasswordActivity"
-            android:theme="@style/NoActionBar"/>
+        <activity
+            android:name=".feature.activity.FindPasswordActivity"
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".feature.activity.SettingActivity"
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".feature.activity.PersonalInfoActivity"
+            android:theme="@style/NoActionBar" />
+        <activity android:name=".feature.activity.AboutActivity"
+            android:theme="@style/NoActionBar" />
     </application>
 
 </manifest>

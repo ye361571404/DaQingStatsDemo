@@ -28,8 +28,10 @@ import com.stats.daqing.feature.activity.ArticlesActivity;
 import com.stats.daqing.feature.activity.BannerArticlesActivity;
 import com.stats.daqing.feature.activity.DataActivity;
 import com.stats.daqing.feature.activity.LoginActivity;
+import com.stats.daqing.feature.activity.SettingActivity;
 import com.stats.daqing.feature.adapter.ColumnAdapter;
 import com.stats.daqing.feature.banner.BannerImageLoader;
+import com.stats.daqing.utils.SPUtil;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerClickListener;
@@ -267,9 +269,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_user) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            Intent intent;
+            String userInfo = SPUtil.getPreferences(SPUtil.TYPE_USER, "userInfo", "");
+            if (TextUtils.isEmpty(userInfo)) {
+                intent = new Intent(MainActivity.this, LoginActivity.class);
+            }else{
+                intent = new Intent(MainActivity.this, SettingActivity.class);
+            }
             startActivity(intent);
-            // ToastAlone.showShortToast("进入用户中心界面");
         }
         return super.onOptionsItemSelected(item);
     }

@@ -28,10 +28,15 @@ public class Urls {
     /** 设置主题色 **/
     public static final String URL_APP_BACKCOLOR = BASE_URL + "app/backColor";
 
+    /** 注册 - 获取密保问题 **/
+    public static final java.lang.String URL_APP_REGISTER_QUESTIONS = BASE_URL + "app/register/questions";
 
+    /** 注册 **/
+    public static final java.lang.String URL_APP_REGISTER = BASE_URL + "app/register";
 
+    /** 登录 **/
+    public static final java.lang.String URL_APP_LOGIN = BASE_URL + "app/login";
 
-
-
-
+    /** 找回密码 **/
+    public static final java.lang.String URL_APP_FIND_PASSWORD = BASE_URL + "app/retrieve/password";
 }

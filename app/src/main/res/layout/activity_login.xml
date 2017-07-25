@@ -91,12 +91,12 @@
                     android:src="@drawable/user_name" />
 
                 <EditText
-                    android:id="@+id/log_user_name"
+                    android:id="@+id/et_name"
                     android:layout_width="0.0dip"
                     android:layout_height="40.0dip"
                     android:layout_weight="6.0"
                     android:background="@android:color/transparent"
-                    android:hint="邮箱@符号之前最少4个字符"
+                    android:hint="请输入手机号"
                     android:text="" />
 
                 <View
@@ -131,7 +131,7 @@
                     android:src="@drawable/cipher" />
 
                 <EditText
-                    android:id="@+id/log_user_password"
+                    android:id="@+id/et_password"
                     android:layout_width="0.0dip"
                     android:layout_height="fill_parent"
                     android:layout_weight="6.0"
@@ -178,11 +178,11 @@
         </RelativeLayout>
 
         <Button
-            android:id="@+id/log_submit"
+            android:id="@+id/btn_submit"
             android:layout_width="fill_parent"
             android:layout_height="50.0dip"
             android:layout_margin="15.0dip"
-            android:background="#66888888"
+            android:background="@color/blue"
             android:text="登录"
             android:textColor="#ffffffff"
             android:textSize="20.0dip" />
